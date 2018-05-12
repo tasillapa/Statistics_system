@@ -75,11 +75,6 @@ include_once("../connect/connect_db.php");
                                 </li>
                             <?php } else { ?>
                                 <li class="dropdown user user-menu">
-                                    <a href="#">
-                                        <span class="hidden-xs">แก้ไขประชาสัมพันธ์</span>
-                                    </a>
-                                </li>
-                                <li class="dropdown user user-menu">
                                     <a href="calendar.php">
                                         <span class="hidden-xs">ปฏิทินปฏิบัติงาน</span>
                                     </a>
@@ -174,26 +169,21 @@ include_once("../connect/connect_db.php");
                         <ul class="dropdown-menu">
                             <li class="active"><a href="Request_Form.php">ลาป่วย ลาคลอด และลากิจ</a></li>
                             <li><a href="Quit_req_form.php">ลาพักผ่อนข้าราชการ</a></li>
-                            <li><a href="Emp_req_form.php">ลาพักผ่อนลูกจ้างทั่วไป</a></li>
+                            <li><a href="Emp_req_form.php">ลาพักผ่อนพนักงานราชการ</a></li>
                         </ul>
                     </div>
                 </div>
-                <ol class="breadcrumb">
-                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                    <li><a href="#">Forms</a></li>
-                    <li class="active">Advanced Elements</li>
-                </ol>
             </section>
 
             <!-- Main content -->
             <section class="content">
                 <div class="box box-default">
-                    <div class="box-header with-border">
+                    <div class="box-header with-border" style="background-color: #e0e0d1;">
                         <h3 class="box-title">แบบใบลาป่วย ลาคลอดบุตร และลากิจกิจส่วนตัว</h3>
 
                         <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+                            <!--<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>-->
+                            <!--<button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>-->
                         </div>
                     </div>
                     <!-- /.box-header -->
@@ -220,7 +210,14 @@ include_once("../connect/connect_db.php");
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">วันเดือนปี</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="rf_dateFU" placeholder="--/--/----">
+                                                <label  style="padding-top: 8px">
+                                                    <?php
+                                                    $today = date("d/m/y");
+                                                    echo $today;
+                                                    ?>
+                                                </label>
+                                                <input type="hidden" class="form-control" value="<?php $today = date("d/m/y");
+                                                    echo $today; ?>" id="rf_dateFU" placeholder="--/--/----">
                                             </div>
                                         </div>
                                     </div>
@@ -253,7 +250,7 @@ include_once("../connect/connect_db.php");
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">ข้าพเจ้า</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="rf_name" placeholder="กรอกชื่อ">
+                                                <input type="text" class="form-control" id="rf_name" placeholder="กรอกชื่อ" value="<?php echo $_SESSION['name'] ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -269,8 +266,8 @@ include_once("../connect/connect_db.php");
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">ระดับ</label>
-                                            <div class="col-sm-10">
+                                            <label class="col-sm-3 control-label">ระดับ</label>
+                                            <div class="col-sm-9">
                                                 <input type="text" class="form-control" id="rf_level" placeholder="กรอกระดับ">
                                             </div>
                                         </div>
@@ -295,9 +292,9 @@ include_once("../connect/connect_db.php");
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">ขอลา</label>
-                                            <div class="col-sm-10">
-                                                <div class="form-group" id='rf_r2f'>
+                                            <label class="col-sm-3 control-label">ขอลา</label>
+                                            <div class="col-sm-9">
+                                                <div class="form-group" id='rf_r2f' style="margin-left: 10px">
                                                     <label>
                                                         <input type="radio" name="rf_r2" class="minimal-red" value="ป่วย">&nbsp&nbsp&nbsp&nbsp&nbsp&nbspป่วย
                                                     </label><br>
@@ -311,10 +308,14 @@ include_once("../connect/connect_db.php");
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-1">
                                         <div class="form-group"><br>
-                                            <label class="col-sm-2 control-label">เนื่องจาก</label>
-                                            <div class="col-sm-10">
+                                            <label class="col-sm-12 control-label">เนื่องจาก</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="form-group"><br>
+                                            <div class="col-sm-12">
                                                 <textarea type="text" class="form-control" id="rf_detail" placeholder="ระบุสาเหตุ"></textarea>
                                             </div>
                                         </div>
@@ -349,8 +350,8 @@ include_once("../connect/connect_db.php");
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="col-sm-4 control-label">ข้าพเจ้าได้ลา</label>
+                                        <div class="form-group" style="margin-top: 5px;">
+                                            <center><label class="col-sm-4">ข้าพเจ้าได้ลา</label></center>
                                             <div class="col-sm-8">
                                                 <div class="form-group" id='rf_r3l'>
                                                     <label>
@@ -366,14 +367,18 @@ include_once("../connect/connect_db.php");
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label">ครั้งสุดท้ายตั้งแต่วันที่</label>
-                                            <div class="col-sm-3">
+                                            <label class="col-sm-6 control-label">ครั้งสุดท้ายตั้งแต่วันที่</label>
+                                            <div class="col-sm-6">
                                                 <input type="text" class="form-control" id="rf_BdateStart_p" placeholder="--/--/----">
                                             </div>
-                                            <label class="col-sm-2 control-label">ถึงวันที่</label>
-                                            <div class="col-sm-4">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">ถึงวันที่</label>
+                                            <div class="col-sm-7">
                                                 <input type="text" class="form-control" id="rf_AdateStart_p" placeholder="--/--/----">
                                             </div>
                                         </div>
@@ -655,10 +660,10 @@ include_once("../connect/connect_db.php");
                     autoclose: true,
                     format: 'dd/mm/yyyy'
                 })
-                $('#rf_dateFU').datepicker({
-                    autoclose: true,
-                    format: 'dd/mm/yyyy'
-                })
+//                $('#rf_dateFU').datepicker({
+//                    autoclose: true,
+//                    format: 'dd/mm/yyyy'
+//                })
                 $('#rf_BdateStart_f').datepicker({
                     autoclose: true,
                     format: 'dd/mm/yyyy'

@@ -18,15 +18,15 @@ if (mysqli_num_rows($query) >= 1) {
         $_SESSION['name'] = $rs['fname'] . ' ' . $rs['lname'];
     }
     if ($_SESSION['claim_id'] == '1') {
-        header('Location: ../index.php');
+        header('Location: ../main/calendar.php');
         end();
     }
     if ($_SESSION['claim_id'] == '2') {
-        header('Location: ../index.php');
+        header('Location: ../main/calendar.php');
         end();
     }
     if ($_SESSION['claim_id'] == '3') {
-        header('Location: ../index.php');
+        header('Location: ../main/calendar.php');
         end();
     }
 } else {

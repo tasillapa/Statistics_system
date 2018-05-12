@@ -88,19 +88,19 @@ while ($rs = mysqli_fetch_array($query)) {
                                     </li>
                                 <?php } else { ?>
                                     <li class="dropdown user user-menu">
-                                        <a href="#">
-                                            <span class="hidden-xs">แก้ไขประชาสัมพันธ์</span>
-                                        </a>
-                                    </li>
-                                    <li class="dropdown user user-menu">
                                         <a href="calendar.php">
                                             <span class="hidden-xs">ปฏิทินปฏิบัติงาน</span>
                                         </a>
                                     </li>
                                     <li class="dropdown user user-menu active">
-                                        <a href="Request_Form.php">
-                                            <span class="hidden-xs">ยื่นการลา</span>
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <span class="hidden-xs">การลา</span>&nbsp;
+                                            <span class="fa fa-caret-down"></span>
                                         </a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                            <li><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
+                                        </ul>
                                     </li>
                                     <?php if ($_SESSION['claim_id'] == '2') { ?>
                                         <li class="dropdown user user-menu active">
@@ -171,28 +171,6 @@ while ($rs = mysqli_fetch_array($query)) {
                         </div>
                     </nav>
                 </header>
-
-
-                <!-- Content Header (Page header) -->
-                <section class="content-header">
-                    <div class="input-group input-group-lg">
-                        <div class="input-group-btn">
-                            <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> เลือกประเภทการลา
-                                <span class="fa fa-caret-down"></span></button>
-                            <ul class="dropdown-menu">
-                                <li><a href="Request_Form.php">ลาป่วย ลาคลอด และลากิจ</a></li>
-                                <li><a href="Quit_req_form.php">ลาพักผ่อนข้าราชการ</a></li>
-                                <li class="active"><a href="Emp_req_form.php">ลาพักผ่อนลูกจ้างทั่วไป</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <ol class="breadcrumb">
-                        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                        <li><a href="#">Forms</a></li>
-                        <li class="active">Advanced Elements</li>
-                    </ol>
-                </section>
-
                 <!-- Main content -->
                 <section class="content">
                     <div class="box box-default" id="fm_print">

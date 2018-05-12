@@ -75,11 +75,6 @@ include_once("../connect/connect_db.php");
                                 </li>
                             <?php } else { ?>
                                 <li class="dropdown user user-menu">
-                                    <a href="#">
-                                        <span class="hidden-xs">แก้ไขประชาสัมพันธ์</span>
-                                    </a>
-                                </li>
-                                <li class="dropdown user user-menu">
                                     <a href="calendar.php">
                                         <span class="hidden-xs">ปฏิทินปฏิบัติงาน</span>
                                     </a>
@@ -90,7 +85,7 @@ include_once("../connect/connect_db.php");
                                         <span class="fa fa-caret-down"></span>
                                     </a>
                                     <ul class="dropdown-menu" role="menu qq">
-                                        <li class="active"><a href="Emp_req_form.php">ยื่นการลา</a></li>
+                                        <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
                                         <li><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
                                     </ul>
                                 </li>
@@ -174,26 +169,21 @@ include_once("../connect/connect_db.php");
                         <ul class="dropdown-menu">
                             <li><a href="Request_Form.php">ลาป่วย ลาคลอด และลากิจ</a></li>
                             <li><a href="Quit_req_form.php">ลาพักผ่อนข้าราชการ</a></li>
-                            <li class="active"><a href="Emp_req_form.php">ลาพักผ่อนลูกจ้างทั่วไป</a></li>
+                            <li class="active"><a href="Emp_req_form.php">ลาพักผ่อนพนักงานราชการ</a></li>
                         </ul>
                     </div>
                 </div>
-                <ol class="breadcrumb">
-                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                    <li><a href="#">Forms</a></li>
-                    <li class="active">Advanced Elements</li>
-                </ol>
             </section>
 
             <!-- Main content -->
             <section class="content">
                 <div class="box box-default">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">แบบคำร้องขอลาพักผ่อน ลูกจ้างทั่วไป</h3>
+                    <div class="box-header with-border" style="background-color: #e0e0d1;">
+                        <h3 class="box-title">แบบคำร้องขอลาพักผ่อน พนักงานราชการ</h3>
 
                         <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+                            <!--<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>-->
+                            <!--<button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>-->
                         </div>
                     </div>
                     <!-- /.box-header -->
@@ -201,7 +191,7 @@ include_once("../connect/connect_db.php");
                         <form class="form-horizontal">
                             <div class="box-body">
                                 <div class="col-md-12">
-                                    <center> <h4>แบบคำร้องขอลาพักผ่อน ลูกจ้างทั่วไป</h4></center>
+                                    <center> <h4>แบบคำร้องขอลาพักผ่อน พนักงานราชการ</h4></center>
                                 </div></br></br></br>
                                 <div class="row">
                                     <div class="col-md-6"></div>
@@ -220,7 +210,13 @@ include_once("../connect/connect_db.php");
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">วันเดือนปี</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="erf_dateFU" placeholder="--/--/----">
+                                                 <label style="padding-top: 8px">
+                                                    <?php
+                                                       $today = date("d/m/y");
+                                                       echo $today;
+                                                       ?>
+                                                </label>
+                                                <input type="hidden" class="form-control" id="erf_dateFU" value="<?php $today = date("d/m/y"); echo $today;?>" placeholder="--/--/----">
                                             </div>
                                         </div>
                                     </div>
@@ -254,7 +250,7 @@ include_once("../connect/connect_db.php");
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">ข้าพเจ้า</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="erf_name" placeholder="กรอกชื่อ">
+                                                <input type="text" class="form-control" id="erf_name" placeholder="กรอกชื่อ" value="<?php echo $_SESSION['name']?>">
                                             </div>
                                         </div>
                                     </div>
@@ -288,8 +284,8 @@ include_once("../connect/connect_db.php");
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="col-sm-6 control-label">มีสิทธิลาพักผ่อนประจำปี 10 วันทำการ</label>
-                                            <div class="col-sm-6">
+                                            <label class="col-sm-7 control-label">มีสิทธิลาพักผ่อนประจำปี 10 วันทำการ</label>
+                                            <div class="col-sm-5">
                                             </div>
                                         </div>
                                     </div>
@@ -575,10 +571,10 @@ include_once("../connect/connect_db.php");
                     return str.split('/').reverse().join('-');
                 }
 
-                $('#erf_dateFU').datepicker({
-                    autoclose: true,
-                    format: 'dd/mm/yyyy'
-                });
+//                $('#erf_dateFU').datepicker({
+//                    autoclose: true,
+//                    format: 'dd/mm/yyyy'
+//                });
                 $('#erf_BdateStart_f').datepicker({
                     autoclose: true,
                     format: 'dd/mm/yyyy'

@@ -85,11 +85,6 @@ include_once("../connect/connect_db.php");
                                 </li>
                             <?php } else { ?>
                                 <li class="dropdown user user-menu">
-                                    <a href="#">
-                                        <span class="hidden-xs">แก้ไขประชาสัมพันธ์</span>
-                                    </a>
-                                </li>
-                                <li class="dropdown user user-menu">
                                     <a href="calendar.php">
                                         <span class="hidden-xs">ปฏิทินปฏิบัติงาน</span>
                                     </a>
@@ -100,7 +95,7 @@ include_once("../connect/connect_db.php");
                                         <span class="fa fa-caret-down"></span>
                                     </a>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li class="active"><a href="Quit_req_form.php">ยื่นการลา</a></li>
+                                        <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
                                         <li><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
                                     </ul>
                                 </li>
@@ -177,12 +172,11 @@ include_once("../connect/connect_db.php");
 
             <section class="content" id="official">
                 <div class="box box-default">
-                    <div class="box-header with-border">
+                    <div class="box-header with-border" style="background-color: #e0e0d1;">
                         <h3 class="box-title">ลาป่วย ลาคลอด และลากิจ</h3>
 
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
                         </div>
                     </div>
                     <!-- /.box-header -->
@@ -234,19 +228,13 @@ include_once("../connect/connect_db.php");
                             </tbody>
                         </table>
                     </div>
-                    <!-- /.box-body -->
-                    <div class="box-footer">
-                        Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
-                        the plugin.
-                    </div>
                 </div>
                 <div class="box box-default">
-                    <div class="box-header with-border">
+                    <div class="box-header with-border" style="background-color: #e0e0d1;">
                         <h3 class="box-title">ลาพักผ่อนข้าราชการ</h3>
 
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
                         </div>
                     </div>
                     <!-- /.box-header -->
@@ -298,19 +286,13 @@ include_once("../connect/connect_db.php");
                             </tbody>
                         </table>
                     </div>
-                    <!-- /.box-body -->
-                    <div class="box-footer">
-                        Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
-                        the plugin.
-                    </div>
                 </div>
                 <div class="box box-default">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">ลาพักผ่อนลูกจ้างทั่วไป</h3>
+                    <div class="box-header with-border" style="background-color: #e0e0d1;">
+                        <h3 class="box-title">ลาพักผ่อนพนักงานราชการ</h3>
 
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
                         </div>
                     </div>
                     <!-- /.box-header -->
@@ -362,22 +344,8 @@ include_once("../connect/connect_db.php");
                             </tbody>
                         </table>
                     </div>
-                    <!-- /.box-body -->
-                    <div class="box-footer">
-                        Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
-                        the plugin.
-                    </div>
                 </div>
             </section>
-
-            <footer class="main-footer">
-                <div class="pull-right hidden-xs">
-                    <b>Version</b> 2.4.0
-                </div>
-                <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-                reserved.
-            </footer>
-            <!-- ./wrapper -->
         </div>
 
         <!-- jQuery 3 -->

@@ -88,19 +88,19 @@ while ($rs = mysqli_fetch_array($query)) {
                                     </li>
                                 <?php } else { ?>
                                     <li class="dropdown user user-menu">
-                                        <a href="#">
-                                            <span class="hidden-xs">แก้ไขประชาสัมพันธ์</span>
-                                        </a>
-                                    </li>
-                                    <li class="dropdown user user-menu">
                                         <a href="calendar.php">
                                             <span class="hidden-xs">ปฏิทินปฏิบัติงาน</span>
                                         </a>
                                     </li>
                                     <li class="dropdown user user-menu active">
-                                        <a href="Request_Form.php">
-                                            <span class="hidden-xs">ยื่นการลา</span>
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <span class="hidden-xs">การลา</span>&nbsp;
+                                            <span class="fa fa-caret-down"></span>
                                         </a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                            <li><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
+                                        </ul>
                                     </li>
                                     <?php if ($_SESSION['claim_id'] == '2') { ?>
                                         <li class="dropdown user user-menu active">
@@ -346,24 +346,24 @@ while ($rs = mysqli_fetch_array($query)) {
                                                     <div class="form-group" id='rf_r3l'>&nbsp&nbsp&nbsp
                                                         <label>
                                                             <input type="checkbox" name="rf_r3" <?php
-                                                                   if ($rs['rf_r3'] == "ป่วย") {
-                                                                       echo "checked";
-                                                                   }
-                                                                   ?> disabled>&nbsp&nbsp&nbsp&nbspป่วย
+                                                            if ($rs['rf_r3'] == "ป่วย") {
+                                                                echo "checked";
+                                                            }
+                                                            ?> disabled>&nbsp&nbsp&nbsp&nbspป่วย
                                                         </label>&nbsp&nbsp
                                                         <label>
                                                             <input type="checkbox" name="rf_r3" <?php
-                                                                   if ($rs['rf_r3'] == "กิจส่วนตัว") {
-                                                                       echo "checked";
-                                                                   }
-                                                                   ?> disabled>&nbsp&nbsp&nbsp&nbspกิจส่วนตัว
+                                                            if ($rs['rf_r3'] == "กิจส่วนตัว") {
+                                                                echo "checked";
+                                                            }
+                                                            ?> disabled>&nbsp&nbsp&nbsp&nbspกิจส่วนตัว
                                                         </label>&nbsp&nbsp
                                                         <label>
                                                             <input type="checkbox" name="rf_r3" <?php
-                                                                   if ($rs['rf_r3'] == "คลอดบุตร") {
-                                                                       echo "checked";
-                                                                   }
-                                                                   ?> disabled>&nbsp&nbsp&nbsp&nbspคลอดบุตร
+                                                            if ($rs['rf_r3'] == "คลอดบุตร") {
+                                                                echo "checked";
+                                                            }
+                                                            ?> disabled>&nbsp&nbsp&nbsp&nbspคลอดบุตร
                                                         </label>
                                                     </div>
                                                 </div>
@@ -412,7 +412,7 @@ while ($rs = mysqli_fetch_array($query)) {
                                         </div>
                                         <div class="col-md-6"></div>
                                     </div>
-<?php } ?>
+                                <?php } ?>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group"><br><br><br><br><br><br><br><br><br><br>

@@ -96,11 +96,6 @@ include_once("../connect/connect_db.php");
                                 </li>
                             <?php } else { ?>
                                 <li class="dropdown user user-menu">
-                                    <a href="#">
-                                        <span class="hidden-xs">แก้ไขประชาสัมพันธ์</span>
-                                    </a>
-                                </li>
-                                <li class="dropdown user user-menu">
                                     <a href="calendar.php">
                                         <span class="hidden-xs">ปฏิทินปฏิบัติงาน</span>
                                     </a>
@@ -111,7 +106,7 @@ include_once("../connect/connect_db.php");
                                         <span class="fa fa-caret-down"></span>
                                     </a>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li class="active"><a href="Quit_req_form.php">ยื่นการลา</a></li>
+                                        <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
                                         <li><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
                                     </ul>
                                 </li>
@@ -188,33 +183,19 @@ include_once("../connect/connect_db.php");
 
             <section class="content" id="official">
                 <div class="box box-default">
-                    <div class="box-header with-border">
+                    <div class="box-header with-border" style="background-color: #e0e0d1;">
                         <h3 class="box-title">ปฏิทินปฏิบัติงาน</h3>
 
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
                         </div>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
                         <div id='calendar'></div>
                     </div>
-                    <!-- /.box-body -->
-                    <div class="box-footer">
-                        Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
-                        the plugin.
-                    </div>
                 </div>
             </section>
-
-            <footer class="main-footer">
-                <div class="pull-right hidden-xs">
-                    <b>Version</b> 2.4.0
-                </div>
-                <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-                reserved.
-            </footer>
             <!-- ./wrapper -->
         </div>
 
@@ -258,93 +239,91 @@ include_once("../connect/connect_db.php");
         <script>
 
             $(document).ready(function () {
-
-                $('#calendar').fullCalendar({
-                    header: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'month,agendaWeek,agendaDay'
-                    },
-                    defaultDate: '2018-03-12',
-                    navLinks: true, // can click day/week names to navigate views
-                    selectable: true,
-                    selectHelper: true,
-                    select: function (start, end) {
-                        var title = prompt('Event Title:');
-                        var eventData;
-                        if (title) {
-                            eventData = {
-                                title: title,
-                                start: start,
-                                end: end
-                            };
-                            $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
-                        }
-                        $('#calendar').fullCalendar('unselect');
-                    },
-                    editable: true,
-                    eventLimit: true, // allow "more" link when too many events
-                    events: [
-                        {
-                            title: 'สุริยะ: ลาพักร้อน 5 วัน',
-                            start: '2018-03-01',
-                            color: 'pink'
-                        },
-                        {
-                            title: 'Long Event',
-                            start: '2018-03-07',
-                            end: '2018-03-10'
-                        },
-                        {
-                            id: 999,
-                            title: 'Repeating Event',
-                            start: '2018-03-09T16:00:00'
-                        },
-                        {
-                            id: 999,
-                            title: 'Repeating Event',
-                            start: '2018-03-16T16:00:00'
-                        },
-                        {
-                            title: 'Conference',
-                            start: '2018-03-11',
-                            end: '2018-03-13'
-                        },
-                        {
-                            title: 'Meeting',
-                            start: '2018-03-12T10:30:00',
-                            end: '2018-03-12T12:30:00'
-                        },
-                        {
-                            title: 'Lunch',
-                            start: '2018-03-12T12:00:00'
-                        },
-                        {
-                            title: 'Meeting',
-                            start: '2018-03-12T14:30:00'
-                        },
-                        {
-                            title: 'Happy Hour',
-                            start: '2018-03-12T17:30:00'
-                        },
-                        {
-                            title: 'Dinner',
-                            start: '2018-03-12T20:00:00'
-                        },
-                        {
-                            title: 'Birthday Party',
-                            start: '2018-03-13T07:00:00'
-                        },
-                        {
-                            title: 'Click for Google',
-                            url: 'http://google.com/',
-                            start: '2018-03-28'
-                        }
-                    ]
+                var dataV = [];
+                var num = 0;
+                $.ajax({
+                    url: "../control/get_calandar.php",
+                    type: "post",
+                    data: {GETRF: 'get'},
+                    success: function (data) {
+                        $.each(data, function (i, k) {
+                            dataV.push({'title': data[i].rf_name + ' ลาเนื่องจาก :' + data[i].rf_toppic, 'start': data[i].rf_BdateStart_f, 'end': data[i].rf_AdateStart_f, color: '#990033'});
+                            num++;
+                        });
+                    }
                 });
-
+                $.ajax({
+                    url: "../control/get_calandar.php",
+                    type: "post",
+                    data: {GETERF: 'get'},
+                    success: function (data) {
+                        $.each(data, function (i, k) {
+                            dataV.push({'title': data[i].erf_name + ' :' + data[i].erf_toppic, 'start': data[i].erf_BdateStart_f, 'end': data[i].erf_AdateStart_f, color: '#990099'});
+                            num++;
+                        });
+                    }
+                });
+                $.ajax({
+                    url: "../control/get_calandar.php",
+                    type: "post",
+                    data: {GETQRF: 'get'},
+                    success: function (data) {
+                        $.each(data, function (i, k) {
+                            dataV.push({'title': data[i].qrf_name + ' :' + data[i].qrf_toppic, 'start': data[i].qrf_BdateStart_f, 'end': data[i].qrf_AdateStart_f, color: '#9900CC'});
+                            num++;
+                        });
+                        call_calandar(dataV);
+                    }
+                });
+                function call_calandar(data) {
+                    $('#calendar').fullCalendar({
+                        header: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'month,agendaWeek,agendaDay'
+                        },
+                        defaultDate: date(),
+                        navLinks: true, // can click day/week names to navigate views
+                        selectable: true,
+                        selectHelper: true,
+                        select: function (start, end) {
+                            var title = prompt('Event Title:');
+                            var eventData;
+                            if (title) {
+                                eventData = {
+                                    title: title,
+                                    start: start,
+                                    end: end
+                                };
+                                $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+                            }
+                            $('#calendar').fullCalendar('unselect');
+                        },
+                        editable: true,
+                        eventLimit: true, // allow "more" link when too many events
+                        events: (function () {
+                            return data;
+                        })(),
+                    });
+                }
             });
+            function date() {
+                var today = new Date();
+                var dd = today.getDate();
+                var mm = today.getMonth() + 1; //January is 0!
+                var yyyy = today.getFullYear();
 
+                if (dd < 10) {
+                    dd = '0' + dd
+                }
+
+                if (mm < 10) {
+                    mm = '0' + mm
+                }
+
+                today = yyyy + '-' + mm + '-' + dd;
+                return today;
+            }
         </script>
     </body>
 </html>

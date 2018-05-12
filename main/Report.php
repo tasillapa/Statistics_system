@@ -85,11 +85,6 @@ include_once("../connect/connect_db.php");
                                 </li>
                             <?php } else { ?>
                                 <li class="dropdown user user-menu">
-                                    <a href="#">
-                                        <span class="hidden-xs">แก้ไขประชาสัมพันธ์</span>
-                                    </a>
-                                </li>
-                                <li class="dropdown user user-menu">
                                     <a href="calendar.php">
                                         <span class="hidden-xs">ปฏิทินปฏิบัติงาน</span>
                                     </a>
@@ -100,7 +95,7 @@ include_once("../connect/connect_db.php");
                                         <span class="fa fa-caret-down"></span>
                                     </a>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li class="active"><a href="Quit_req_form.php">ยื่นการลา</a></li>
+                                        <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
                                         <li><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
                                     </ul>
                                 </li>
@@ -177,12 +172,10 @@ include_once("../connect/connect_db.php");
 
             <section class="content" id="official">
                 <div class="box box-default">
-                    <div class="box-header with-border">
+                    <div class="box-header with-border" style="background-color: #e0e0d1;">
                         <h3 class="box-title">รายงานประมวลผลการลา</h3>
-
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
                         </div>
                     </div>
                     <!-- /.box-header -->
@@ -192,55 +185,112 @@ include_once("../connect/connect_db.php");
                                 <tr>
                                     <th >ลำดับ</th>
                                     <th >ชื่อ</th>
-                                    <th >จำนวนที่เคยลาทั้งหมด</th>
-                                    <th >จำนวนที่สามารถลาได้</th>
-                                    <th >จำนวนลาสะสม</th>
-                                    <th >จำนวนลาสะสมที่เหลือ</th>
-                                    <th >หมายเหตุ</th>
+                                    <th >ประเภท</th>
+                                    <th >จำนวนครั้งที่ลา</th>
+                                    <th >จำนวนวันที่เคยลา</th>
+                                    <th >จำนวนวันที่สามารถลาได้</th>
+                                    <th >จำนวนวันลาสะสม</th>
+                                    <th >จำนวนลาวันสะสมที่เหลือ</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 $cn = new connect;
                                 $cn->con_db();
-                             //   $sql = "select * from member as mb left join request_form as rf on mb.member_id = rf.member_id left join quit_req_form as qrf on mb.member_id = qrf.member_id left join emp_req_form as erf on erf.member_id = mb.member_id ORDER BY `rf`.`rf_toppic` ASC";
-                               $sql='select  from request_form';
+                                $sql = 'SELECT COUNT(rf_id) AS num, SUM(rf_num_f) AS num2, rf_name FROM `request_form` WHERE rf_status = "1" GROUP BY rf_name';
                                 $query = $cn->Connect->query($sql);
                                 $row = 1;
-                                while ($rs = mysqli_fetch_array($query)) {
-                                    ?>
-                                    <tr>
-                                        <td><?php echo $row; ?></td>
-                                        <td><?php echo $rs['rf_name']; ?></td>
-                                        <td><?php echo $rs['rf_toppic']; ?></td>
-                                        <td><?php echo rev_date($rs['rf_BdateStart_f']); ?></td>
-                                        <td><?php echo rev_date($rs['rf_AdateStart_p']); ?></td>
-                                        <td><?php echo $rs['rf_detail']; ?></td>
-                                        <td><?php echo $rs['rf_detail']; ?></td>
-                                    </tr>
-                                    <?php
-                                    $row++;
+                                if (mysqli_num_rows($query) != 0) {
+                                    while ($rs = mysqli_fetch_array($query)) {
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $row; ?></td>
+                                            <td><?php echo $rs['rf_name']; ?></td>
+                                            <td><?php echo 'ลากิจ ลาป่วย ลาคลอด' ?></td>
+                                            <td><?php echo $rs['num']; ?></td>
+                                            <td><?php echo $rs['num2']; ?></td>
+                                            <td><?php echo 10 - $rs['num2']; ?></td>
+                                            <td><?php echo 30 - $rs['num2']; ?></td>
+                                            <td><?php echo 30 - $rs['num2']; ?></td>
+                                        </tr>
+                                        <?php
+                                        $row++;
+                                    }
+                                }
+                                $sql2 = 'SELECT COUNT(qrf_id) AS numq, SUM(qrf_num_f) AS numq2, qrf_name FROM `quit_req_form` WHERE qrf_status = "1" GROUP BY qrf_name';
+                                $query2 = $cn->Connect->query($sql2);
+                                if (mysqli_num_rows($query2) != 0) {
+                                    while ($rs = mysqli_fetch_array($query2)) {
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $row; ?></td>
+                                            <td><?php echo $rs['qrf_name']; ?></td>
+                                            <td><?php echo 'ลาพักผ่อนข้าราชการ' ?></td>
+                                            <td><?php echo $rs['numq']; ?></td>
+                                            <td><?php echo $rs['numq2']; ?></td>
+                                            <td><?php echo 10 - $rs['numq2']; ?></td>
+                                            <td><?php echo 30 - $rs['numq2']; ?></td>
+                                            <td><?php echo 30 - $rs['numq2']; ?></td>
+                                        </tr>
+                                        <?php
+                                        $row++;
+                                    }
+                                }
+                                $sql3 = 'SELECT COUNT(erf_id) AS nume, SUM(erf_num_f) AS nume2, erf_name FROM `emp_req_form` WHERE erf_status = "1" GROUP BY erf_name';
+                                $query3 = $cn->Connect->query($sql3);
+                                if (mysqli_num_rows($query3) != 0) {
+                                    while ($rs = mysqli_fetch_array($query3)) {
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $row; ?></td>
+                                            <td><?php echo $rs['erf_name']; ?></td>
+                                            <td><?php echo 'ลาพักผ่อนพนักงานราชการ' ?></td>
+                                            <td><?php echo $rs['nume']; ?></td>
+                                            <td><?php echo $rs['nume2']; ?></td>
+                                            <td><?php echo 10 - $rs['nume2']; ?></td>
+                                            <td><?php echo 30 - $rs['nume2']; ?></td>
+                                            <td><?php echo 30 - $rs['nume2']; ?></td>
+                                        </tr>
+                                        <?php
+                                        $row++;
+                                    }
                                 }
                                 ?>
                             </tbody>
                         </table>
                     </div>
-                    <!-- /.box-body -->
-                    <div class="box-footer">
-                        Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
-                        the plugin.
+                </div>
+
+                <div class="box box-default">
+                    <div class="box-header with-border" style="background-color: #e0e0d1;">
+                        <h3 class="box-title">รายงานประมวลผลการอบรม</h3>
+
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th >ลำดับ</th>
+                                    <th >ชื่อ</th>
+                                    <th >ประเภท</th>
+                                    <th >จำนวนครั้งที่ลา</th>
+                                    <th >จำนวนวันที่เคยลา</th>
+                                    <th >จำนวนวันที่สามารถลาได้</th>
+                                    <th >จำนวนวันลาสะสม</th>
+                                    <th >จำนวนลาวันสะสมที่เหลือ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </section>
-
-            <footer class="main-footer">
-                <div class="pull-right hidden-xs">
-                    <b>Version</b> 2.4.0
-                </div>
-                <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-                reserved.
-            </footer>
-            <!-- ./wrapper -->
         </div>
 
         <!-- jQuery 3 -->
