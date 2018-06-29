@@ -85,11 +85,34 @@ include_once("../connect/connect_db.php");
                                         <span class="fa fa-caret-down"></span>
                                     </a>
                                     <ul class="dropdown-menu" role="menu qq">
-                                        <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                        <?php if ($_SESSION['claim_id'] != '2') { ?>
+                                            <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                        <?php } ?>
                                         <li><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
                                     </ul>
                                 </li>
                                 <?php if ($_SESSION['claim_id'] == '2') { ?>
+                                    <li class="dropdown user user-menu">
+                                        <a href="ConfirmRegister.php">
+                                            <span class="hidden-xs">อนุมัติผู้ใช้งาน</span>
+                                            <?php
+                                            $cn = new connect;
+                                            $cn->con_db();
+                                            $sql = "select * from member where status = '0'";
+                                            $query = $cn->Connect->query($sql);
+                                            $num = mysqli_num_rows($query);
+                                            if ($num != '0') {
+                                                ?>
+                                                <span class = "label label-warning">
+                                                    <?php
+                                                    echo $num;
+                                                    ?>
+                                                </span>
+                                                <?php
+                                            }
+                                            ?>
+                                        </a>
+                                    </li>
                                     <li class="dropdown user user-menu active">
                                         <a href="App_leave_sec.php">
                                             <span class="hidden-xs">อนุมัติการลา</span>
@@ -121,8 +144,13 @@ include_once("../connect/connect_db.php");
                                     </li>
                                 <?php } ?>
                                 <li class="dropdown user user-menu">
+                                    <a href="Training_form.php">
+                                        <span class="hidden-xs">การอบรม</span>
+                                    </a>
+                                </li>
+                                <li class="dropdown user user-menu">
                                     <a href="Report.php">
-                                        <span class="hidden-xs">รายงานการลา</span>
+                                        <span class="hidden-xs">รายงาน</span>
                                     </a>
                                 </li>
 
@@ -143,9 +171,6 @@ include_once("../connect/connect_db.php");
                                         </li>
                                         <!-- Menu Footer-->
                                         <li class="user-footer">
-                                            <div class="pull-left">
-                                                <a href="#" class="btn btn-default btn-flat">เปลี่ยนรหัส</a>
-                                            </div>
                                             <div class="pull-right">
                                                 <a href="logout.php" class="btn btn-default btn-flat">ล็อคเอ้าท์</a>
                                             </div>
@@ -169,7 +194,7 @@ include_once("../connect/connect_db.php");
                         <ul class="dropdown-menu">
                             <li><a href="Request_Form.php">ลาป่วย ลาคลอด และลากิจ</a></li>
                             <li><a href="Quit_req_form.php">ลาพักผ่อนข้าราชการ</a></li>
-                            <li class="active"><a href="Emp_req_form.php">ลาพักผ่อนพนักงานราชการ</a></li>
+                            <!--<li class="active"><a href="Emp_req_form.php">ลาพักผ่อนพนักงานราชการ</a></li>-->
                         </ul>
                     </div>
                 </div>
@@ -210,13 +235,15 @@ include_once("../connect/connect_db.php");
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">วันเดือนปี</label>
                                             <div class="col-sm-10">
-                                                 <label style="padding-top: 8px">
+                                                <label style="padding-top: 8px">
                                                     <?php
-                                                       $today = date("d/m/y");
-                                                       echo $today;
-                                                       ?>
+                                                    $today = date("d/m/y");
+                                                    echo $today;
+                                                    ?>
                                                 </label>
-                                                <input type="hidden" class="form-control" id="erf_dateFU" value="<?php $today = date("d/m/y"); echo $today;?>" placeholder="--/--/----">
+                                                <input type="hidden" class="form-control" id="erf_dateFU" value="<?php $today = date("d/m/y");
+                                                    echo $today;
+                                                    ?>" placeholder="--/--/----">
                                             </div>
                                         </div>
                                     </div>
@@ -250,7 +277,7 @@ include_once("../connect/connect_db.php");
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">ข้าพเจ้า</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="erf_name" placeholder="กรอกชื่อ" value="<?php echo $_SESSION['name']?>">
+                                                <input type="text" class="form-control" id="erf_name" placeholder="กรอกชื่อ" value="<?php echo $_SESSION['name'] ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -339,159 +366,6 @@ include_once("../connect/connect_db.php");
                                     </div>
                                     <div class="col-md-6"></div>
                                 </div>
-                                <!--                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group"><br><br>
-                                                                            <center><label style="text-decoration: underline;">สถิติการลาในปีงบประมานนี้</label><br><br>
-                                                                                <table style="text-align: center;" class="table table-bordered">
-                                                                                    <tbody>
-                                                                                        <tr>
-                                                                                            <th style="text-align: center;">จำนวนครั้งที่ลา</th>
-                                                                                            <th style="text-align: center;">จำนวนวันลา (วันทำการ)</th>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td><span class="badge bg-yellow">1</span></td>
-                                                                                            <td></td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td><span class="badge bg-yellow">2</span></td>
-                                                                                            <td></td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td><span class="badge bg-yellow">3</span></td>
-                                                                                            <td></td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td><span class="badge bg-yellow">4</span></td>
-                                                                                            <td></td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td><span class="badge bg-yellow">5</span></td>
-                                                                                            <td></td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td><span class="badge bg-yellow">6</span></td>
-                                                                                            <td></td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td><span class="badge bg-yellow">7</span></td>
-                                                                                            <td></td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td><span class="badge bg-yellow">8</span></td>
-                                                                                            <td></td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td><span class="badge bg-yellow">9</span></td>
-                                                                                            <td></td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td><span class="badge bg-yellow">10</span></td>
-                                                                                            <td></td>
-                                                                                        </tr>
-                                                                                    </tbody></table>
-                                
-                                                                            </center>  
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <br>  <br>  <br>  <br>
-                                                                            <label class="col-sm-3 control-label">(ลงชื่อ)</label>
-                                                                            <label style="text-align: center;"class="col-sm-9 control-label">...............................................................................................</label>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-sm-3 control-label"></label>
-                                                                            <label style="text-align: center;"class="col-sm-9 control-label">(.............................................................................................)</label>
-                                                                        </div><br><br>
-                                                                        <div class="form-group">
-                                                                            <label style="text-decoration: underline;" class="col-sm-5 control-label">ความเห็นผู้บังคับบัญชา</label><br><br>
-                                                                            <div class="col-sm-12">
-                                                                                <label style="text-align: center;"class="col-sm-9 control-label">.........................................................................................................................................</label><br>
-                                                                            </div>
-                                                                            <div class="col-sm-12">
-                                                                                <label style="text-align: center;"class="col-sm-9 control-label">.........................................................................................................................................</label>
-                                                                            </div><br><br><br>
-                                                                            <div class="col-md-12" >
-                                                                                <label style="text-align: center;" class="col-sm-12 control-label">(ลงชื่อ) ...........................................................................................................................</label><br><br>
-                                                                            </div><br>
-                                                                            <div class="col-md-12" >
-                                                                                <label style="text-align: center;" class="col-sm-12 control-label">(ตำแหน่ง) ......................................................................................................................</label><br><br>
-                                                                            </div><br>
-                                                                            <div class="col-md-12" >
-                                                                                <label style="text-align: center;" class="col-sm-12 control-label">(วันที่) ................................/............................................../.............................................</label><br><br>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label style="text-decoration: underline;" class="col-sm-3 control-label">คำสั่ง</label><br><br>
-                                                                            <div class="col-sm-12">
-                                                                                <label>
-                                                                                    <input type="checkbox" class="minimal" disabled>
-                                                                                    อนุญาต
-                                                                                </label>
-                                                                                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                                                                                <label>
-                                                                                    <input type="checkbox" class="minimal" disabled>
-                                                                                    ไม่อนุญาต
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="col-sm-12">
-                                                                                <label style="text-align: center;"class="col-sm-9 control-label">.........................................................................................................................................</label><br>
-                                                                                <label style="text-align: center;"class="col-sm-9 control-label">.........................................................................................................................................</label><br>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label style="text-align: center;" class="col-sm-12 control-label">(ลงชื่อ) ............................................................................ ผู้ตรวจสอบ</label><br><br>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label style="text-align: center;" class="col-sm-12 control-label">(ลงชื่อ) .................................................................................... </label><br><br>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label style="text-align: center;" class="col-sm-12 control-label">(....................................................................................)</label><br><br>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label style="text-align: center;" class="col-sm-12 control-label">(....................................................................................)</label><br><br>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label style="text-align: center;" class="col-sm-12 control-label">ตำแหน่ง .................................................................................... </label><br><br>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label style="text-align: center;" class="col-sm-12 control-label">ตำแหน่ง .................................................................................... </label><br><br>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label style="text-align: center;" class="col-sm-12 control-label">วันที่ .........................../................................/......................... </label><br><br>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label style="text-align: center;" class="col-sm-12 control-label">วันที่ .........................../................................/......................... </label><br><br>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>-->
-
                                 <div class="box-footer">
                                     <button type="reset" class="btn btn-danger pull-right">ยกเลิก</button>
                                     <button type="button" class="btn btn-info pull-right btn-save">บันทึก</button>
@@ -500,17 +374,7 @@ include_once("../connect/connect_db.php");
                         <!-- /.row -->
                     </div>
                 </div>
-
             </section>
-
-            <footer class="main-footer">
-                <div class="pull-right hidden-xs">
-                    <b>Version</b> 2.4.0
-                </div>
-                <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-                reserved.
-            </footer>
-            <!-- ./wrapper -->
         </div>
 
         <!-- jQuery 3 -->

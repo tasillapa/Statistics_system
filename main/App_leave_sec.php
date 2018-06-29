@@ -95,11 +95,34 @@ include_once("../connect/connect_db.php");
                                         <span class="fa fa-caret-down"></span>
                                     </a>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                        <?php if ($_SESSION['claim_id'] != '2') { ?>
+                                            <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                        <?php } ?>
                                         <li><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
                                     </ul>
                                 </li>
                                 <?php if ($_SESSION['claim_id'] == '2') { ?>
+                                    <li class="dropdown user user-menu">
+                                        <a href="ConfirmRegister.php">
+                                            <span class="hidden-xs">อนุมัติผู้ใช้งาน</span>
+                                            <?php
+                                            $cn = new connect;
+                                            $cn->con_db();
+                                            $sql = "select * from member where status = '0'";
+                                            $query = $cn->Connect->query($sql);
+                                            $num = mysqli_num_rows($query);
+                                            if ($num != '0') {
+                                                ?>
+                                                <span class = "label label-warning">
+                                                    <?php
+                                                    echo $num;
+                                                    ?>
+                                                </span>
+                                                <?php
+                                            }
+                                            ?>
+                                        </a>
+                                    </li>
                                     <li class="dropdown user user-menu active">
                                         <a href="App_leave_sec.php">
                                             <span class="hidden-xs">อนุมัติการลา</span>
@@ -130,13 +153,16 @@ include_once("../connect/connect_db.php");
                                         </a>
                                     </li>
                                 <?php } ?>
-                                
                                 <li class="dropdown user user-menu">
-                                    <a href="Report.php">
-                                        <span class="hidden-xs">รายงานการลา</span>
+                                    <a href="Training_form.php">
+                                        <span class="hidden-xs">การอบรม</span>
                                     </a>
                                 </li>
-
+                                <li class="dropdown user user-menu">
+                                    <a href="Report.php">
+                                        <span class="hidden-xs">รายงาน</span>
+                                    </a>
+                                </li>
                                 <li class="dropdown user user-menu">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                         <img src="../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
@@ -146,7 +172,6 @@ include_once("../connect/connect_db.php");
                                         <!-- User image -->
                                         <li class="user-header">
                                             <img src="../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-
                                             <p>
                                                 <?php echo $_SESSION['name'] ?>
                                                 <small>ตำแหน่ง <?php echo $_SESSION['position'] ?></small>
@@ -154,9 +179,6 @@ include_once("../connect/connect_db.php");
                                         </li>
                                         <!-- Menu Footer-->
                                         <li class="user-footer">
-                                            <div class="pull-left">
-                                                <a href="#" class="btn btn-default btn-flat">เปลี่ยนรหัส</a>
-                                            </div>
                                             <div class="pull-right">
                                                 <a href="logout.php" class="btn btn-default btn-flat">ล็อคเอ้าท์</a>
                                             </div>
@@ -172,12 +194,12 @@ include_once("../connect/connect_db.php");
 
             <section class="content" id="official">
                 <div class="box box-default">
-                    <div class="box-header with-border">
+                    <div class="box-header with-border" style="background-color: #e0e0d1;">
                         <h3 class="box-title">ลาป่วย ลาคลอด และลากิจ</h3>
 
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+                            <!--<button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>-->
                         </div>
                     </div>
                     <!-- /.box-header -->
@@ -222,19 +244,14 @@ include_once("../connect/connect_db.php");
                             </tbody>
                         </table>
                     </div>
-                    <!-- /.box-body -->
-                    <div class="box-footer">
-                        Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
-                        the plugin.
-                    </div>
                 </div>
                 <div class="box box-default">
-                    <div class="box-header with-border">
+                    <div class="box-header with-border" style="background-color: #e0e0d1;">
                         <h3 class="box-title">ลาพักผ่อนข้าราชการ</h3>
 
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+                            <!--<button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>-->
                         </div>
                     </div>
                     <!-- /.box-header -->
@@ -279,19 +296,14 @@ include_once("../connect/connect_db.php");
                             </tbody>
                         </table>
                     </div>
-                    <!-- /.box-body -->
-                    <div class="box-footer">
-                        Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
-                        the plugin.
-                    </div>
                 </div>
                 <div class="box box-default">
-                    <div class="box-header with-border">
+                    <div class="box-header with-border" style="background-color: #e0e0d1;">
                         <h3 class="box-title">ลาพักผ่อนลูกจ้างทั่วไป</h3>
 
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+                            <!--<button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>-->
                         </div>
                     </div>
                     <!-- /.box-header -->
@@ -336,22 +348,8 @@ include_once("../connect/connect_db.php");
                             </tbody>
                         </table>
                     </div>
-                    <!-- /.box-body -->
-                    <div class="box-footer">
-                        Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
-                        the plugin.
-                    </div>
                 </div>
             </section>
-
-            <footer class="main-footer">
-                <div class="pull-right hidden-xs">
-                    <b>Version</b> 2.4.0
-                </div>
-                <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-                reserved.
-            </footer>
-            <!-- ./wrapper -->
         </div>
 
         <!-- jQuery 3 -->
@@ -458,11 +456,12 @@ include_once("../connect/connect_db.php");
                                                 })
                                             });
                                             function yesRf(data) {
-                                                if (confirm('คุณต้องการอนุมัติ ใช่หรือไม่?')) {
+                                                var msg = window.prompt("คุณต้องการอนุมัติใช่หรือไม่ กรุณาระบุเหตุผล? ", "");
+                                                if (msg != null) {
                                                     $.ajax({
                                                         url: "../control/Approve_leaveDB.php",
                                                         type: "post",
-                                                        data: {rfY: data},
+                                                        data: {rfY: data, note: msg},
                                                         success: function (result) {
                                                             window.location.href = 'App_leave_sec.php';
                                                         }
@@ -470,11 +469,12 @@ include_once("../connect/connect_db.php");
                                                 }
                                             }
                                             function noRf(data) {
-                                                if (confirm('คุณไม่ต้องการอนุมัติ ใช่หรือไม่?')) {
+                                                var msg = window.prompt("คุณไม่ต้องการอนุมัติใช่หรือไม่ กรุณาระบุเหตุผล? ", "");
+                                                if (msg != null) {
                                                     $.ajax({
                                                         url: "../control/Approve_leaveDB.php",
                                                         type: "post",
-                                                        data: {rfN: data},
+                                                        data: {rfN: data, note: msg},
                                                         success: function (result) {
                                                             window.location.href = 'App_leave_sec.php';
                                                         }
@@ -482,11 +482,12 @@ include_once("../connect/connect_db.php");
                                                 }
                                             }
                                             function yesQrf(data) {
-                                                if (confirm('คุณต้องการอนุมัติ ใช่หรือไม่?')) {
+                                                var msg = window.prompt("คุณต้องการอนุมัติใช่หรือไม่ กรุณาระบุเหตุผล? ", "");
+                                                if (msg != null) {
                                                     $.ajax({
                                                         url: "../control/Approve_leaveDB.php",
                                                         type: "post",
-                                                        data: {qrfY: data},
+                                                        data: {qrfY: data, note: msg},
                                                         success: function (result) {
                                                             window.location.href = 'App_leave_sec.php';
                                                         }
@@ -494,11 +495,12 @@ include_once("../connect/connect_db.php");
                                                 }
                                             }
                                             function noQrf(data) {
-                                                if (confirm('คุณไม่ต้องการอนุมัติ ใช่หรือไม่?')) {
+                                                var msg = window.prompt("คุณไม่ต้องการอนุมัติใช่หรือไม่ กรุณาระบุเหตุผล? ", "");
+                                                if (msg != null) {
                                                     $.ajax({
                                                         url: "../control/Approve_leaveDB.php",
                                                         type: "post",
-                                                        data: {qrfN: data},
+                                                        data: {qrfN: data, note: msg},
                                                         success: function (result) {
                                                             window.location.href = 'App_leave_sec.php';
                                                         }
@@ -506,11 +508,12 @@ include_once("../connect/connect_db.php");
                                                 }
                                             }
                                             function yesErf(data) {
-                                                if (confirm('คุณต้องการอนุมัติ ใช่หรือไม่?')) {
+                                                var msg = window.prompt("คุณต้องการอนุมัติใช่หรือไม่ กรุณาระบุเหตุผล? ", "");
+                                                if (msg != null) {
                                                     $.ajax({
                                                         url: "../control/Approve_leaveDB.php",
                                                         type: "post",
-                                                        data: {erfY: data},
+                                                        data: {erfY: data, note: msg},
                                                         success: function (result) {
                                                             window.location.href = 'App_leave_sec.php';
                                                         }
@@ -518,11 +521,12 @@ include_once("../connect/connect_db.php");
                                                 }
                                             }
                                             function noErf(data) {
-                                                if (confirm('คุณไม่ต้องการอนุมัติ ใช่หรือไม่?')) {
+                                                var msg = window.prompt("คุณไม่ต้องการอนุมัติใช่หรือไม่ กรุณาระบุเหตุผล? ", "");
+                                                if (msg != null) {
                                                     $.ajax({
                                                         url: "../control/Approve_leaveDB.php",
                                                         type: "post",
-                                                        data: {erfN: data},
+                                                        data: {erfN: data, note: msg},
                                                         success: function (result) {
                                                             window.location.href = 'App_leave_sec.php';
                                                         }

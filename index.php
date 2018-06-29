@@ -70,16 +70,40 @@ include_once("connect/connect_db.php");
                                     </a>
                                 </li>
                                 <li class="dropdown user user-menu">
+
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                         <span class="hidden-xs">การลา</span>&nbsp;
                                         <span class="fa fa-caret-down"></span>
                                     </a>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li class="active"><a href="main/Request_Form.php">ยื่นการลา</a></li>
+                                        <?php if ($_SESSION['claim_id'] != '2') { ?>
+                                            <li class="active"><a href="main/Request_Form.php">ยื่นการลา</a></li>
+                                        <?php } ?>
                                         <li><a href="main/Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
                                     </ul>
                                 </li>
                                 <?php if ($_SESSION['claim_id'] == '2') { ?>
+                                    <li class="dropdown user user-menu">
+                                        <a href="ConfirmRegister.php">
+                                            <span class="hidden-xs">อนุมัติผู้ใช้งาน</span>
+                                            <?php
+                                            $cn = new connect;
+                                            $cn->con_db();
+                                            $sql = "select * from member where status = '0'";
+                                            $query = $cn->Connect->query($sql);
+                                            $num = mysqli_num_rows($query);
+                                            if ($num != '0') {
+                                                ?>
+                                                <span class = "label label-warning">
+                                                    <?php
+                                                    echo $num;
+                                                    ?>
+                                                </span>
+                                                <?php
+                                            }
+                                            ?>
+                                        </a>
+                                    </li>
                                     <li class="dropdown user user-menu active">
                                         <a href="main/App_leave_sec.php">
                                             <span class="hidden-xs">อนุมัติการลา</span>
@@ -111,53 +135,15 @@ include_once("connect/connect_db.php");
                                     </li>
                                 <?php } ?>
                                 <li class="dropdown user user-menu">
+                                    <a href="main/Training_form.php">
+                                        <span class="hidden-xs">การอบรม</span>
+                                    </a>
+                                </li>
+                                <li class="dropdown user user-menu">
                                     <a href="main/Report.php">
-                                        <span class="hidden-xs">รายงานการลา</span>
+                                        <span class="hidden-xs">รายงาน</span>
                                     </a>
                                 </li>
-                                <!-- Notifications: style can be found in dropdown.less -->
-                                <li class="dropdown notifications-menu">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        <i class="fa fa-bell-o"></i>
-                                        <span class="label label-warning">10</span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li class="header">You have 10 notifications</li>
-                                        <li>
-                                            <!-- inner menu: contains the actual data -->
-                                            <ul class="menu">
-                                                <li>
-                                                    <a href="#">
-                                                        <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the
-                                                        page and may cause design problems
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <i class="fa fa-users text-red"></i> 5 new members joined
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <i class="fa fa-user text-red"></i> You changed your username
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="footer"><a href="#">View all</a></li>
-                                    </ul>
-                                </li>
-
                                 <li class="dropdown user user-menu">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                         <img src="dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
@@ -175,9 +161,6 @@ include_once("connect/connect_db.php");
                                         </li>
                                         <!-- Menu Footer-->
                                         <li class="user-footer">
-                                            <div class="pull-left">
-                                                <a href="#" class="btn btn-default btn-flat">เปลี่ยนรหัส</a>
-                                            </div>
                                             <div class="pull-right">
                                                 <a href="main/logout.php" class="btn btn-default btn-flat">ล็อคเอ้าท์</a>
                                             </div>
@@ -192,149 +175,8 @@ include_once("connect/connect_db.php");
             </header>
             <!-- Main content -->
             <section class="content">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="box">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Monthly Recap Report</h3>
-
-                                <div class="box-tools pull-right">
-                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                    </button>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                                            <i class="fa fa-wrench"></i></button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li><a href="#">Action</a></li>
-                                            <li><a href="#">Another action</a></li>
-                                            <li><a href="#">Something else here</a></li>
-                                            <li class="divider"></li>
-                                            <li><a href="#">Separated link</a></li>
-                                        </ul>
-                                    </div>
-                                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                                </div>
-                            </div>
-                            <!-- /.box-header -->
-                            <div class="box-body">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <p class="text-center">
-                                            <strong>Sales: 1 Jan, 2014 - 30 Jul, 2014</strong>
-                                        </p>
-
-                                        <div class="chart">
-                                            <!-- Sales Chart Canvas -->
-                                            <canvas id="salesChart" style="height: 180px;"></canvas>
-                                        </div>
-                                        <!-- /.chart-responsive -->
-                                    </div>
-                                    <!-- /.col -->
-                                    <div class="col-md-4">
-                                        <p class="text-center">
-                                            <strong>Goal Completion</strong>
-                                        </p>
-
-                                        <div class="progress-group">
-                                            <span class="progress-text">Add Products to Cart</span>
-                                            <span class="progress-number"><b>160</b>/200</span>
-
-                                            <div class="progress sm">
-                                                <div class="progress-bar progress-bar-aqua" style="width: 80%"></div>
-                                            </div>
-                                        </div>
-                                        <!-- /.progress-group -->
-                                        <div class="progress-group">
-                                            <span class="progress-text">Complete Purchase</span>
-                                            <span class="progress-number"><b>310</b>/400</span>
-
-                                            <div class="progress sm">
-                                                <div class="progress-bar progress-bar-red" style="width: 80%"></div>
-                                            </div>
-                                        </div>
-                                        <!-- /.progress-group -->
-                                        <div class="progress-group">
-                                            <span class="progress-text">Visit Premium Page</span>
-                                            <span class="progress-number"><b>480</b>/800</span>
-
-                                            <div class="progress sm">
-                                                <div class="progress-bar progress-bar-green" style="width: 80%"></div>
-                                            </div>
-                                        </div>
-                                        <!-- /.progress-group -->
-                                        <div class="progress-group">
-                                            <span class="progress-text">Send Inquiries</span>
-                                            <span class="progress-number"><b>250</b>/500</span>
-
-                                            <div class="progress sm">
-                                                <div class="progress-bar progress-bar-yellow" style="width: 80%"></div>
-                                            </div>
-                                        </div>
-                                        <!-- /.progress-group -->
-                                    </div>
-                                    <!-- /.col -->
-                                </div>
-                                <!-- /.row -->
-                            </div>
-                            <!-- ./box-body -->
-                            <div class="box-footer">
-                                <div class="row">
-                                    <div class="col-sm-3 col-xs-6">
-                                        <div class="description-block border-right">
-                                            <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>
-                                            <h5 class="description-header">$35,210.43</h5>
-                                            <span class="description-text">TOTAL REVENUE</span>
-                                        </div>
-                                        <!-- /.description-block -->
-                                    </div>
-                                    <!-- /.col -->
-                                    <div class="col-sm-3 col-xs-6">
-                                        <div class="description-block border-right">
-                                            <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> 0%</span>
-                                            <h5 class="description-header">$10,390.90</h5>
-                                            <span class="description-text">TOTAL COST</span>
-                                        </div>
-                                        <!-- /.description-block -->
-                                    </div>
-                                    <!-- /.col -->
-                                    <div class="col-sm-3 col-xs-6">
-                                        <div class="description-block border-right">
-                                            <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>
-                                            <h5 class="description-header">$24,813.53</h5>
-                                            <span class="description-text">TOTAL PROFIT</span>
-                                        </div>
-                                        <!-- /.description-block -->
-                                    </div>
-                                    <!-- /.col -->
-                                    <div class="col-sm-3 col-xs-6">
-                                        <div class="description-block">
-                                            <span class="description-percentage text-red"><i class="fa fa-caret-down"></i> 18%</span>
-                                            <h5 class="description-header">1200</h5>
-                                            <span class="description-text">GOAL COMPLETIONS</span>
-                                        </div>
-                                        <!-- /.description-block -->
-                                    </div>
-                                </div>
-                                <!-- /.row -->
-                            </div>
-                            <!-- /.box-footer -->
-                        </div>
-                        <!-- /.box -->
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
 
             </section>
-            <!-- /.content -->
-
-            <footer class="main-footer">
-                <div class="pull-right hidden-xs">
-                    <b>Version</b> 2.4.0
-                </div>
-                <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-                reserved.
-            </footer>
 
             <!-- Control Sidebar -->
             <aside class="control-sidebar control-sidebar-dark">

@@ -6,6 +6,12 @@ if (!isset($_SESSION['name']) || !isset($_SESSION['username']) || !isset($_SESSI
     $_SESSION['username'] = '';
     $_SESSION['password'] = '';
 }
+function rev_date($date) {
+    $array = explode("-", $date);
+    $rev = array_reverse($array);
+    $date = implode("/", $rev);
+    return $date;
+}
 include_once("../connect/connect_db.php");
 ?>
 <!DOCTYPE html>
@@ -85,11 +91,34 @@ include_once("../connect/connect_db.php");
                                         <span class="fa fa-caret-down"></span>
                                     </a>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                        <?php if ($_SESSION['claim_id'] != '2') { ?>
+                                            <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                        <?php } ?>
                                         <li><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
                                     </ul>
                                 </li>
                                 <?php if ($_SESSION['claim_id'] == '2') { ?>
+                                    <li class="dropdown user user-menu">
+                                        <a href="ConfirmRegister.php">
+                                            <span class="hidden-xs">อนุมัติผู้ใช้งาน</span>
+                                            <?php
+                                            $cn = new connect;
+                                            $cn->con_db();
+                                            $sql = "select * from member where status = '0'";
+                                            $query = $cn->Connect->query($sql);
+                                            $num = mysqli_num_rows($query);
+                                            if ($num != '0') {
+                                                ?>
+                                                <span class = "label label-warning">
+                                                    <?php
+                                                    echo $num;
+                                                    ?>
+                                                </span>
+                                                <?php
+                                            }
+                                            ?>
+                                        </a>
+                                    </li>
                                     <li class="dropdown user user-menu active">
                                         <a href="App_leave_sec.php">
                                             <span class="hidden-xs">อนุมัติการลา</span>
@@ -121,8 +150,13 @@ include_once("../connect/connect_db.php");
                                     </li>
                                 <?php } ?>
                                 <li class="dropdown user user-menu">
+                                    <a href="Training_form.php">
+                                        <span class="hidden-xs">การอบรม</span>
+                                    </a>
+                                </li>
+                                <li class="dropdown user user-menu">
                                     <a href="Report.php">
-                                        <span class="hidden-xs">รายงานการลา</span>
+                                        <span class="hidden-xs">รายงาน</span>
                                     </a>
                                 </li>
 
@@ -143,9 +177,6 @@ include_once("../connect/connect_db.php");
                                         </li>
                                         <!-- Menu Footer-->
                                         <li class="user-footer">
-                                            <div class="pull-left">
-                                                <a href="#" class="btn btn-default btn-flat">เปลี่ยนรหัส</a>
-                                            </div>
                                             <div class="pull-right">
                                                 <a href="logout.php" class="btn btn-default btn-flat">ล็อคเอ้าท์</a>
                                             </div>
@@ -168,8 +199,8 @@ include_once("../connect/connect_db.php");
                             <span class="fa fa-caret-down"></span></button>
                         <ul class="dropdown-menu">
                             <li><a href="Request_Form.php">ลาป่วย ลาคลอด และลากิจ</a></li>
-                            <li class="active"><a href="Quit_req_form.php">ลาพักผ่อนข้าราชการ</a></li>
-                            <li><a href="Emp_req_form.php">ลาพักผ่อนพนักงานราชการ</a></li>
+                            <li class="active"><a href="Quit_req_form.php">ลาพักผ่อน</a></li>
+                            <!--<li><a href="Emp_req_form.php">ลาพักผ่อนพนักงานราชการ</a></li>-->
                         </ul>
                     </div>
                 </div>
@@ -178,7 +209,7 @@ include_once("../connect/connect_db.php");
             <section class="content" id="official">
                 <div class="box box-default">
                     <div class="box-header with-border" style="background-color: #e0e0d1;">
-                        <h3 class="box-title">แบบคำร้องขอลาพักผ่อน ข้าราชการ</h3>
+                        <h3 class="box-title">แบบคำร้องขอลาพักผ่อน</h3>
 
                         <div class="box-tools pull-right">
                             <!--<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>-->
@@ -190,7 +221,7 @@ include_once("../connect/connect_db.php");
                         <form class="form-horizontal">
                             <div class="box-body">
                                 <div class="col-md-12">
-                                    <center> <h4>แบบคำร้องขอลาพักผ่อน ข้าราชการ</h4></center>
+                                    <center> <h4>แบบคำร้องขอลาพักผ่อน</h4></center>
                                 </div></br></br></br>
                                 <div class="row">
                                     <div class="col-md-6"></div>
@@ -211,11 +242,14 @@ include_once("../connect/connect_db.php");
                                             <div class="col-sm-10">
                                                 <label style="padding-top: 8px">
                                                     <?php
-                                                       $today = date("d/m/y");
-                                                       echo $today;
-                                                       ?>
+                                                    $today = date("d/m/y");
+                                                    echo $today;
+                                                    ?>
                                                 </label>
-                                                <input type="hidden" class="form-control" id="qrf_dateFU" value="<?php $today = date("d/m/y"); echo $today;?>"" placeholder="--/--/----" value="">
+                                                <input type="hidden" class="form-control" id="qrf_dateFU" value="<?php
+                                                $today = date("d/m/y");
+                                                echo $today;
+                                                ?>"" placeholder="--/--/----" value="">
                                             </div>
                                         </div>
                                     </div>
@@ -257,7 +291,7 @@ include_once("../connect/connect_db.php");
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">บัตรเลขที่</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="qrf_Codid" placeholder="กรอกบัตรเลขที่">
+                                                <input type="text" class="form-control" id="qrf_Codid" placeholder="กรอกบัตรเลขที่" value="<?php echo $_SESSION['numberID']; ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -267,7 +301,7 @@ include_once("../connect/connect_db.php");
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">สำนัก/กอง</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="qrf_office" placeholder="กรอกสำนัก/กอง">
+                                                <input type="text" class="form-control" id="qrf_office" placeholder="กรอกสำนัก/กอง" value="<?php echo $_SESSION['department']; ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -275,7 +309,7 @@ include_once("../connect/connect_db.php");
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">ได้รับการบรรจุเมื่อวันที่</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" id="qrf_income" placeholder="--/--/----">
+                                                <input type="text" class="form-control" id="qrf_income" placeholder="--/--/----" value="<?php echo rev_date($_SESSION['date']); ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -311,7 +345,7 @@ include_once("../connect/connect_db.php");
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">มีกำหนด</label>
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" id="" placeholder="ระบุจำนวนวัน">
+                                                <input type="text" class="form-control" id="qrf_num_f" placeholder="ระบุจำนวนวัน">
                                             </div>
                                             <label style="padding-top: 8px" class="col-sm-2">วัน</label>
                                         </div>
@@ -322,7 +356,7 @@ include_once("../connect/connect_db.php");
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">ในระหว่างลาจะติดต่อข้าพเจ้าได้ที่</label>
                                             <div class="col-sm-7">
-                                                <textarea type="text" class="form-control" id="qrf_contact" placeholder="กรอกที่อยู่ที่ติดต่อได้"></textarea>
+                                                <textarea type="text" class="form-control" id="qrf_contact" placeholder="กรอกที่อยู่ที่ติดต่อได้"><?php echo $_SESSION['address']; ?></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -332,7 +366,7 @@ include_once("../connect/connect_db.php");
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">หมายเลขโทรศัพท์</label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" id="qrf_fhone" placeholder="กรอกเบอร์โทรศักท์ที่ติดต่อได้">
+                                                <input type="text" class="form-control" id="qrf_fhone" placeholder="กรอกเบอร์โทรศักท์ที่ติดต่อได้" value="<?php echo $_SESSION['tel']; ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -347,16 +381,7 @@ include_once("../connect/connect_db.php");
                         <!-- /.row -->
                     </div>
                 </div>
-
             </section>
-            <footer class="main-footer">
-                <div class="pull-right hidden-xs">
-                    <b>Version</b> 2.4.0
-                </div>
-                <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-                reserved.
-            </footer>
-            <!-- ./wrapper -->
         </div>
 
         <!-- jQuery 3 -->
@@ -411,9 +436,6 @@ include_once("../connect/connect_db.php");
                         }
                     });
                 });
-                function convertDigitIn(str) {
-                    return str.split('/').reverse().join('-');
-                }
 
 //                $('#qrf_dateFU').datepicker({
 //                    autoclose: true,
@@ -495,6 +517,25 @@ include_once("../connect/connect_db.php");
                     showInputs: false
                 })
             })
+            $('#qrf_AdateStart_f').change(function () {
+                if (($('#qrf_BdateStart_f').val() != '') && ($('#qrf_AdateStart_f').val() != '')) {
+                    $('#qrf_num_f').val(jsDateDiff(convertDigitIn($('#qrf_BdateStart_f').val()), convertDigitIn($('#qrf_AdateStart_f').val())));
+                }
+            });
+            $('#qrf_BdateStart_f').change(function () {
+                if (($('#qrf_BdateStart_f').val() != '') && ($('#qrf_AdateStart_f').val() != '')) {
+                    $('#qrf_num_f').val(jsDateDiff(convertDigitIn($('#qrf_BdateStart_f').val()), convertDigitIn($('#qrf_AdateStart_f').val())));
+                }
+            });
+            function jsDateDiff(strDate1, strDate2) {
+                var theDate1 = Date.parse(strDate1) / 1000;
+                var theDate2 = Date.parse(strDate2) / 1000;
+                var diff = (theDate2 - theDate1) / (60 * 60 * 24);
+                return diff;
+            }
+            function convertDigitIn(str) {
+                return str.split('/').reverse().join('-');
+            }
         </script>
     </body>
 </html>

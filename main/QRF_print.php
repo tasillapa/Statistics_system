@@ -24,7 +24,8 @@ while ($rs = mysqli_fetch_array($query)) {
     <!DOCTYPE html>
     <html>
         <head>
-            <meta charset="utf-8">
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+            <!--<meta charset="utf-8">-->
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <title>ระบบเว็บไซต์สำนักงาน สถิติจังหวัดสระบุรี</title>
             <!-- Tell the browser to be responsive to screen width -->
@@ -98,11 +99,34 @@ while ($rs = mysqli_fetch_array($query)) {
                                             <span class="fa fa-caret-down"></span>
                                         </a>
                                         <ul class="dropdown-menu" role="menu">
-                                            <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                            <?php if ($_SESSION['claim_id'] != '2') { ?>
+                                                <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                            <?php } ?>
                                             <li><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
                                         </ul>
                                     </li>
                                     <?php if ($_SESSION['claim_id'] == '2') { ?>
+                                        <li class="dropdown user user-menu">
+                                            <a href="ConfirmRegister.php">
+                                                <span class="hidden-xs">อนุมัติผู้ใช้งาน</span>
+                                                <?php
+                                                $cn = new connect;
+                                                $cn->con_db();
+                                                $sql = "select * from member where status = '0'";
+                                                $query = $cn->Connect->query($sql);
+                                                $num = mysqli_num_rows($query);
+                                                if ($num != '0') {
+                                                    ?>
+                                                    <span class = "label label-warning">
+                                                        <?php
+                                                        echo $num;
+                                                        ?>
+                                                    </span>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </a>
+                                        </li>
                                         <li class="dropdown user user-menu active">
                                             <a href="App_leave_sec.php">
                                                 <span class="hidden-xs">อนุมัติการลา</span>
@@ -134,8 +158,13 @@ while ($rs = mysqli_fetch_array($query)) {
                                         </li>
                                     <?php } ?>
                                     <li class="dropdown user user-menu">
+                                        <a href="Training_form.php">
+                                            <span class="hidden-xs">การอบรม</span>
+                                        </a>
+                                    </li>
+                                    <li class="dropdown user user-menu">
                                         <a href="Report.php">
-                                            <span class="hidden-xs">รายงานการลา</span>
+                                            <span class="hidden-xs">รายงาน</span>
                                         </a>
                                     </li>
 
@@ -156,9 +185,6 @@ while ($rs = mysqli_fetch_array($query)) {
                                             </li>
                                             <!-- Menu Footer-->
                                             <li class="user-footer">
-                                                <div class="pull-left">
-                                                    <a href="#" class="btn btn-default btn-flat">เปลี่ยนรหัส</a>
-                                                </div>
                                                 <div class="pull-right">
                                                     <a href="logout.php" class="btn btn-default btn-flat">ล็อคเอ้าท์</a>
                                                 </div>
@@ -175,7 +201,7 @@ while ($rs = mysqli_fetch_array($query)) {
                 <section class="content">
                     <div class="box box-default" id="fm_print">
                         <div class="box-header with-border">
-                            <h3 class="box-title">แบบคำร้องขอลาพักผ่อน ข้าราชการ</h3>
+                            <h3 class="box-title">แบบคำร้องขอลาพักผ่อน</h3>
 
                             <div class="box-tools pull-right">
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -185,9 +211,9 @@ while ($rs = mysqli_fetch_array($query)) {
                         <!-- /.box-header -->
                         <div class="box-body">
                             <form class="form-horizontal">
-                                <div class="box-body">
+                                <div class="box-body" id="content">
                                     <div class="col-md-12">
-                                        <center> <h4>แบบคำร้องขอลาพักผ่อน ข้าราชการ</h4></center>
+                                        <center> <h4>แบบคำร้องขอลาพักผ่อน</h4></center>
                                     </div></br></br></br>
                                     <div class="row">
                                         <div class="col-md-6"></div>
@@ -481,7 +507,7 @@ while ($rs = mysqli_fetch_array($query)) {
                                     </div>
                                 </div>
                             </div>
-
+                            <div id="editor"></div>
                             <div class="box-footer">
                                 <button type="reset" class="btn btn-danger pull-right btn-cancel">ย้อนกลับ</button>
                                 <button type="button" class="btn btn-info pull-right btn-print">พิมพ์</button>
@@ -492,17 +518,11 @@ while ($rs = mysqli_fetch_array($query)) {
                 </div>
 
             </section>
-
-            <footer class="main-footer">
-                <div class="pull-right hidden-xs">
-                    <b>Version</b> 2.4.0
-                </div>
-                <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-                reserved.
-            </footer>
-            <!-- ./wrapper -->
         </div>
-
+        <script language="javascript" type="text/javascript" src="../dist/js/jspdf.customfonts.min.js"></script>
+        <script language="javascript" type="text/javascript" src="../dist/js/default_vfs.js"></script>
+<!--        <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/0.9.0rc1/jspdf.min.js"></script>-->
         <!-- jQuery 3 -->
         <script src="../bower_components/jquery/dist/jquery.min.js"></script>
         <!-- Bootstrap 3.3.7 -->
@@ -535,50 +555,25 @@ while ($rs = mysqli_fetch_array($query)) {
         <!-- Page script -->
         <script>
             $(function () {
-                $(".btn-print").click(function () {
-                    //Hide all other elements other than printarea.
-                    var printBlock = $(".fm_print");
-                    printBlock.hide();
-                    window.print();
-                    printBlock.show();
-
+               $(".btn-print").click(function () {
+                    $.ajax({
+                        url: "../control/fpdf_QRF.php",
+                        type: "post",
+                        data: {pdf_print: 'post'},
+                        success: function (result) {
+                            window.open('../fpdf/MyPDF/print_QRF.pdf', '_blank');
+                        }
+                    });
                 });
+               
+                function convertDigitOut(str) {
+                    return str.split('-').reverse().join('/');
+                }
+               
                 $(".btn-cancel").click(function () {
                     window.location.href = 'Quit_req_form.php';
                 });
 
-                //Initialize Select2 Elements
-                $('.select2').select2()
-
-                //Datemask dd/mm/yyyy
-                $('#datemask').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
-                //Datemask2 mm/dd/yyyy
-                $('#datemask2').inputmask('mm/dd/yyyy', {'placeholder': 'mm/dd/yyyy'})
-                //Money Euro
-                $('[data-mask]').inputmask()
-
-                //Date range picker
-                $('#reservation').daterangepicker()
-                //Date range picker with time picker
-                $('#reservationtime').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A'})
-                //Date range as a button
-                $('#daterange-btn').daterangepicker(
-                        {
-                            ranges: {
-                                'Today': [moment(), moment()],
-                                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                            },
-                            startDate: moment().subtract(29, 'days'),
-                            endDate: moment()
-                        },
-                        function (start, end) {
-                            $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
-                        }
-                )
 
                 //Date picker
                 $('#datepicker').datepicker({

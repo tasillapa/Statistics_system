@@ -95,23 +95,46 @@ include_once("../connect/connect_db.php");
                                     </a>
                                 </li>
                             <?php } else { ?>
-                                <li class="dropdown user user-menu">
+                                <li class="dropdown user user-menu active">
                                     <a href="calendar.php">
                                         <span class="hidden-xs">ปฏิทินปฏิบัติงาน</span>
                                     </a>
                                 </li>
-                                <li class="dropdown user user-menu active">
+                                <li class="dropdown user user-menu">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                         <span class="hidden-xs">การลา</span>&nbsp;
                                         <span class="fa fa-caret-down"></span>
                                     </a>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                        <?php if ($_SESSION['claim_id'] != '2') { ?>
+                                            <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                        <?php } ?>
                                         <li><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
                                     </ul>
                                 </li>
                                 <?php if ($_SESSION['claim_id'] == '2') { ?>
-                                    <li class="dropdown user user-menu active">
+                                    <li class="dropdown user user-menu">
+                                        <a href="ConfirmRegister.php">
+                                            <span class="hidden-xs">อนุมัติผู้ใช้งาน</span>
+                                            <?php
+                                            $cn = new connect;
+                                            $cn->con_db();
+                                            $sql = "select * from member where status = '0'";
+                                            $query = $cn->Connect->query($sql);
+                                            $num = mysqli_num_rows($query);
+                                            if ($num != '0') {
+                                                ?>
+                                                <span class = "label label-warning">
+                                                    <?php
+                                                    echo $num;
+                                                    ?>
+                                                </span>
+                                                <?php
+                                            }
+                                            ?>
+                                        </a>
+                                    </li>
+                                    <li class="dropdown user user-menu">
                                         <a href="App_leave_sec.php">
                                             <span class="hidden-xs">อนุมัติการลา</span>
                                             <?php
@@ -141,10 +164,14 @@ include_once("../connect/connect_db.php");
                                         </a>
                                     </li>
                                 <?php } ?>
-
+                                <li class="dropdown user user-menu">
+                                    <a href="Training_form.php">
+                                        <span class="hidden-xs">การอบรม</span>
+                                    </a>
+                                </li>
                                 <li class="dropdown user user-menu">
                                     <a href="Report.php">
-                                        <span class="hidden-xs">รายงานการลา</span>
+                                        <span class="hidden-xs">รายงาน</span>
                                     </a>
                                 </li>
 
@@ -165,9 +192,6 @@ include_once("../connect/connect_db.php");
                                         </li>
                                         <!-- Menu Footer-->
                                         <li class="user-footer">
-                                            <div class="pull-left">
-                                                <a href="#" class="btn btn-default btn-flat">เปลี่ยนรหัส</a>
-                                            </div>
                                             <div class="pull-right">
                                                 <a href="logout.php" class="btn btn-default btn-flat">ล็อคเอ้าท์</a>
                                             </div>
@@ -185,7 +209,11 @@ include_once("../connect/connect_db.php");
                 <div class="box box-default">
                     <div class="box-header with-border" style="background-color: #e0e0d1;">
                         <h3 class="box-title">ปฏิทินปฏิบัติงาน</h3>
-
+                        <center>
+                            <small class="label pull-center" style="background-color: #990033">ลากิจ ลาป่วย ลาคลอด</small>
+                            <small class="label pull-center" style="background-color: #990099">ลาพักผ่อน</small>
+                            <small class="label pull-center" style="background-color: #008080">แผนงานหัวหน้า</small>
+                        </center>
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                         </div>
@@ -269,50 +297,72 @@ include_once("../connect/connect_db.php");
                     data: {GETQRF: 'get'},
                     success: function (data) {
                         $.each(data, function (i, k) {
-                            dataV.push({'title': data[i].qrf_name + ' :' + data[i].qrf_toppic, 'start': data[i].qrf_BdateStart_f, 'end': data[i].qrf_AdateStart_f, color: '#9900CC'});
+                            dataV.push({'title': data[i].qrf_name + ' :' + data[i].qrf_toppic, 'start': data[i].qrf_BdateStart_f, 'end': data[i].qrf_AdateStart_f, color: '#990099'});
+                            num++;
+                        });
+                    }
+                });
+                $.ajax({
+                    url: "../control/get_calandar.php",
+                    type: "post",
+                    data: {GETWB: 'get'},
+                    success: function (data) {
+                        $.each(data, function (i, k) {
+                            dataV.push({'title': data[i].twb_title, 'start': data[i].twb_start, 'end': data[i].twb_end, color: '#008080'});
                             num++;
                         });
                         call_calandar(dataV);
                     }
                 });
-                function call_calandar(data) {
-                    $('#calendar').fullCalendar({
-                        header: {
-                            left: 'prev,next today',
-                            center: 'title',
-                            right: 'month,agendaWeek,agendaDay'
-                        },
-                        defaultDate: date(),
-                        navLinks: true, // can click day/week names to navigate views
-                        selectable: true,
-                        selectHelper: true,
-                        select: function (start, end) {
-                            var title = prompt('Event Title:');
-                            var eventData;
-                            if (title) {
-                                eventData = {
-                                    title: title,
-                                    start: start,
-                                    end: end
-                                };
-                                $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
-                            }
-                            $('#calendar').fullCalendar('unselect');
-                        },
-                        editable: true,
-                        eventLimit: true, // allow "more" link when too many events
-                        events: (function () {
-                            return data;
-                        })(),
-                    });
-                }
             });
+            function call_calandar(data) {
+                $('#calendar').fullCalendar({
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,agendaWeek,agendaDay'
+                    },
+                    defaultDate: date(),
+                    navLinks: true, // can click day/week names to navigate views
+                    selectable: true,
+                    selectHelper: true,
+                    select: function (start, end) {
+                        var title = prompt('ระบุรายละเอียดแผนงานหัวหน้า:');
+                        var eventData;
+                        var claim_id = '<?= $_SESSION["claim_id"]; ?>';
+                        if ((title != null) && (claim_id != '2')) {
+                            $.ajax({
+                                url: "../control/get_calandar.php",
+                                type: "post",
+                                data: {addWorkboss: 'post', title: title, start: datetime(start), end: datetime(end)},
+                                success: function (data) {
+                                    if (title) {
+                                        eventData = {
+                                            title: title,
+                                            start: start,
+                                            end: end,
+                                            color: '#008080'
+                                        };
+                                        $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+                                    }
+                                    $('#calendar').fullCalendar('unselect');
+                                }
+                            });
+                        }
+                    },
+                    editable: true,
+                    eventLimit: true, // allow "more" link when too many events
+                    events: (function () {
+                        return data;
+                    })(),
+                });
+            }
+
             function date() {
                 var today = new Date();
                 var dd = today.getDate();
                 var mm = today.getMonth() + 1; //January is 0!
                 var yyyy = today.getFullYear();
-
                 if (dd < 10) {
                     dd = '0' + dd
                 }
@@ -323,6 +373,25 @@ include_once("../connect/connect_db.php");
 
                 today = yyyy + '-' + mm + '-' + dd;
                 return today;
+            }
+            function datetime(date) {
+                var today = new Date(date);
+                var dd = today.getDate();
+                var mm = today.getMonth() + 1; //January is 0!
+                var yyyy = today.getFullYear();
+                var curr_hour = today.getHours();
+                var curr_min = today.getMinutes();
+                var curr_sec = today.getSeconds();
+                var strTime = curr_hour + ':' + curr_min + ':' + curr_sec;
+                if (dd < 10) {
+                    dd = '0' + dd
+                }
+                if (mm < 10) {
+                    mm = '0' + mm
+                }
+
+                today = yyyy + '-' + mm + '-' + dd;
+                return today + ' ' + strTime;
             }
         </script>
     </body>

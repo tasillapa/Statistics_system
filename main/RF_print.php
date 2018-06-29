@@ -20,6 +20,40 @@ $cn->con_db();
 $sql = "select * from request_form where rf_id = (select max(rf_id) from request_form)";
 $query = $cn->Connect->query($sql);
 while ($rs = mysqli_fetch_array($query)) {
+//    include_once('../fpdf/fpdf.php');
+//    
+//    define('FPDF_FONTPATH', 'font/');
+//
+//    $pdf = new fpdf('P', 'mm', 'A4');
+//    $pdf->AddPage();
+//    $pdf->AddFont('angsa', '', 'angsa.php');
+//    $pdf->SetFont('angsa', '', 16);
+//    $pdf->Cell(0, 10, iconv('UTF-8', 'TIS-620', 'แบบใบลาป่วย ลาคลอดบุตร และลากิจกิจส่วนตัว'), 0, 1, "C");
+//    $pdf->SetFont('angsa', '', 16);
+//    $pdf->Cell(155, 10, iconv('UTF-8', 'TIS-620', 'เขียนที่   '.$rs['rf_write_place']), 0, 0, "R");
+////    $pdf->Cell(20, 10, iconv('UTF-8', 'TIS-620', '' . $rs['rf_write_place'] . ''), 0, 1);
+//    $pdf->Ln();
+//    $pdf->Cell(145, 10, iconv('UTF-8', 'TIS-620', 'วันที่'), 0, 0, "R");
+//    $pdf->Cell(20, 10, iconv('UTF-8', 'TIS-620', '' . $rs['rf_dateFU'] . ''), 0, 1);
+//    $pdf->Cell(15, 10, iconv('UTF-8', 'TIS-620', 'เรื่อง'), 0, 0);
+//    $pdf->Cell(20, 10, iconv('UTF-8', 'TIS-620', '' . $rs['rf_toppic'] . ''), 0, 1);
+//    $pdf->Cell(40, 10, iconv('UTF-8', 'TIS-620', 'ข้าพเจ้า'), 0, 0, "R");
+//    $pdf->Cell(60, 10, iconv('UTF-8', 'TIS-620', '' . $rs['rf_name'] . ''), 0, 0);
+//    $pdf->Cell(15, 10, iconv('UTF-8', 'TIS-620', 'ตำแหน่ง'), 0, 0);
+//    $pdf->Cell(70, 10, iconv('UTF-8', 'TIS-620', '' . $rs['rf_position'] . ''), 0, 1);
+//    $pdf->SetFont('','U');
+//    $pdf->Cell(15, 10, iconv('UTF-8', 'TIS-620', 'ระดับ'), 0, 0);
+//    $pdf->Cell(100, 10, iconv('UTF-8', 'TIS-620', '' . $rs['rf_toppic'] . ''), 0, 1);
+//    
+////    $pdf->SetLeftMargin(45);
+////    $pdf->SetFontSize(14);
+//    $actual_position_y = $pdf->GetY();
+//    $pdf->SetFillColor(255, 255, 255);
+//    $pdf->SetDrawColor(0, 0, 0);
+//    $pdf->Cell($your_content_width, $your_content_heigth, "", 1, 1, 'C');
+//    $pdf->Rect(5, 5, 200, 287, 'D'); //For A4
+//
+//    $pdf->Output("../fpdf/MyPDF/print_RF.pdf", "F");
     ?>
     <!DOCTYPE html>
     <html>
@@ -98,11 +132,34 @@ while ($rs = mysqli_fetch_array($query)) {
                                             <span class="fa fa-caret-down"></span>
                                         </a>
                                         <ul class="dropdown-menu" role="menu">
-                                            <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                            <?php if ($_SESSION['claim_id'] != '2') { ?>
+                                                <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                            <?php } ?>
                                             <li><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
                                         </ul>
                                     </li>
                                     <?php if ($_SESSION['claim_id'] == '2') { ?>
+                                        <li class="dropdown user user-menu">
+                                            <a href="ConfirmRegister.php">
+                                                <span class="hidden-xs">อนุมัติผู้ใช้งาน</span>
+                                                <?php
+                                                $cn = new connect;
+                                                $cn->con_db();
+                                                $sql = "select * from member where status = '0'";
+                                                $query = $cn->Connect->query($sql);
+                                                $num = mysqli_num_rows($query);
+                                                if ($num != '0') {
+                                                    ?>
+                                                    <span class = "label label-warning">
+                                                        <?php
+                                                        echo $num;
+                                                        ?>
+                                                    </span>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </a>
+                                        </li>
                                         <li class="dropdown user user-menu active">
                                             <a href="App_leave_sec.php">
                                                 <span class="hidden-xs">อนุมัติการลา</span>
@@ -134,8 +191,13 @@ while ($rs = mysqli_fetch_array($query)) {
                                         </li>
                                     <?php } ?>
                                     <li class="dropdown user user-menu">
+                                        <a href="Training_form.php">
+                                            <span class="hidden-xs">การอบรม</span>
+                                        </a>
+                                    </li>
+                                    <li class="dropdown user user-menu">
                                         <a href="Report.php">
-                                            <span class="hidden-xs">รายงานการลา</span>
+                                            <span class="hidden-xs">รายงาน</span>
                                         </a>
                                     </li>
 
@@ -156,9 +218,6 @@ while ($rs = mysqli_fetch_array($query)) {
                                             </li>
                                             <!-- Menu Footer-->
                                             <li class="user-footer">
-                                                <div class="pull-left">
-                                                    <a href="#" class="btn btn-default btn-flat">เปลี่ยนรหัส</a>
-                                                </div>
                                                 <div class="pull-right">
                                                     <a href="logout.php" class="btn btn-default btn-flat">ล็อคเอ้าท์</a>
                                                 </div>
@@ -182,15 +241,14 @@ while ($rs = mysqli_fetch_array($query)) {
                                         <center> <h4>แบบใบลาป่วย ลาคลอดบุตร และลากิจกิจส่วนตัว</h4></center>
                                     </div></br></br></br>
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-xs-12">
 
                                             <div class="form-group">
-                                                <label class="col-sm-7 control-label">เขียนที่</label>
-                                                <div class="col-sm-5"> 
+                                                <label class="col-xs-7 control-label">เขียนที่</label>
+                                                <div class="col-xs-5"> 
                                                     <label class="control-label"><?php echo $rs['rf_write_place']; ?></label>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
                                     <div class="row">
@@ -218,7 +276,7 @@ while ($rs = mysqli_fetch_array($query)) {
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="col-sm-2 control-label">เรียน</label>
+                                                <label class="col-sm-2 control-label hidden">เรียน</label>
                                                 <div class="col-sm-10">
                                                     <label class="control-label"><?php echo $rs['rf_requst']; ?></label>
                                                 </div>
@@ -254,7 +312,7 @@ while ($rs = mysqli_fetch_array($query)) {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-4 hidden">
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label">บัตรเลขที่</label>
                                                 <div class="col-sm-9">
@@ -262,7 +320,7 @@ while ($rs = mysqli_fetch_array($query)) {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-4 hidden">
                                             <div class="form-group">
                                                 <label class="col-sm-2 control-label">สังกัด</label>
                                                 <div class="col-sm-10">
@@ -339,7 +397,7 @@ while ($rs = mysqli_fetch_array($query)) {
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-4" hidden>
                                             <div style="margin-left: -5em" class="form-group">
                                                 <label class="col-sm-4 control-label">ข้าพเจ้าได้ลา</label>
                                                 <div class="col-sm-8">
@@ -369,7 +427,7 @@ while ($rs = mysqli_fetch_array($query)) {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-8">
+                                        <div class="col-md-8 hidden">
                                             <div style="margin-left: -3em" class="form-group">
                                                 <label class="col-sm-3 control-label">ครั้งสุดท้ายตั้งแต่วันที่</label>
                                                 <div class="col-sm-3">
@@ -383,7 +441,7 @@ while ($rs = mysqli_fetch_array($query)) {
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-4 hidden">
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label">มีกำหนด</label>
                                                 <div class="col-sm-1">
@@ -393,7 +451,7 @@ while ($rs = mysqli_fetch_array($query)) {
                                             </div>
                                         </div>
                                         <div class="col-md-8">
-                                            <div style="margin-left: -11em" class="form-group">
+                                            <div style="" class="form-group">
                                                 <label class="col-sm-4 control-label">ในระหว่างลาจะติดต่อข้าพเจ้าได้ที่</label>
                                                 <div class="col-sm-8">
                                                     <label class="control-label"><?php echo $rs['rf_contact']; ?></label>
@@ -592,12 +650,14 @@ while ($rs = mysqli_fetch_array($query)) {
         <script>
             $(function () {
                 $(".btn-print").click(function () {
-                    //Hide all other elements other than printarea.
-                    var printBlock = $(".fm_print");
-                    printBlock.hide();
-                    window.print();
-                    printBlock.show();
-
+                    $.ajax({
+                        url: "../control/fpdf_RF.php",
+                        type: "post",
+                        data: {pdf_print: 'post'},
+                        success: function (result) {
+                            window.open('../fpdf/MyPDF/print_RF.pdf', '_blank');
+                        }
+                    });
                 });
                 $(".btn-cancel").click(function () {
                     window.location.href = 'Request_Form.php';

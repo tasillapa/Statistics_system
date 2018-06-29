@@ -95,11 +95,34 @@ include_once("../connect/connect_db.php");
                                         <span class="fa fa-caret-down"></span>
                                     </a>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
-                                        <li><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
+                                        <?php if ($_SESSION['claim_id'] != '2') { ?>
+                                            <li><a href="Request_Form.php">ยื่นการลา</a></li>
+                                        <?php } ?>
+                                        <li class="active"><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
                                     </ul>
                                 </li>
                                 <?php if ($_SESSION['claim_id'] == '2') { ?>
+                                    <li class="dropdown user user-menu">
+                                        <a href="ConfirmRegister.php">
+                                            <span class="hidden-xs">อนุมัติผู้ใช้งาน</span>
+                                            <?php
+                                            $cn = new connect;
+                                            $cn->con_db();
+                                            $sql = "select * from member where status = '0'";
+                                            $query = $cn->Connect->query($sql);
+                                            $num = mysqli_num_rows($query);
+                                            if ($num != '0') {
+                                                ?>
+                                                <span class = "label label-warning">
+                                                    <?php
+                                                    echo $num;
+                                                    ?>
+                                                </span>
+                                                <?php
+                                            }
+                                            ?>
+                                        </a>
+                                    </li>
                                     <li class="dropdown user user-menu active">
                                         <a href="App_leave_sec.php">
                                             <span class="hidden-xs">อนุมัติการลา</span>
@@ -130,10 +153,14 @@ include_once("../connect/connect_db.php");
                                         </a>
                                     </li>
                                 <?php } ?>
-                              
+                                <li class="dropdown user user-menu">
+                                    <a href="Training_form.php">
+                                        <span class="hidden-xs">การอบรม</span>
+                                    </a>
+                                </li>
                                 <li class="dropdown user user-menu">
                                     <a href="Report.php">
-                                        <span class="hidden-xs">รายงานการลา</span>
+                                        <span class="hidden-xs">รายงาน</span>
                                     </a>
                                 </li>
 
@@ -154,9 +181,6 @@ include_once("../connect/connect_db.php");
                                         </li>
                                         <!-- Menu Footer-->
                                         <li class="user-footer">
-                                            <div class="pull-left">
-                                                <a href="#" class="btn btn-default btn-flat">เปลี่ยนรหัส</a>
-                                            </div>
                                             <div class="pull-right">
                                                 <a href="logout.php" class="btn btn-default btn-flat">ล็อคเอ้าท์</a>
                                             </div>
@@ -189,7 +213,7 @@ include_once("../connect/connect_db.php");
                                     <th style="width: 25%;">เรื่อง</th>
                                     <th style="width: 15%;">วันที่ลา</th>
                                     <th style="width: 15%;">ลาถึงวันที่</th>
-                                    <th style="width: 20%;">รายละเอียด</th>
+                                    <th style="width: 20%;">หมายเหตุ</th>
                                     <th style="width: 10%;">สถานะ</th>
                                 </tr>
                             </thead>
@@ -208,7 +232,7 @@ include_once("../connect/connect_db.php");
                                         <td><?php echo $rs['rf_toppic']; ?></td>
                                         <td><?php echo rev_date($rs['rf_BdateStart_f']); ?></td>
                                         <td><?php echo rev_date($rs['rf_AdateStart_p']); ?></td>
-                                        <td><?php echo $rs['rf_detail']; ?></td>
+                                        <td><?php echo $rs['rf_note']; ?></td>
                                         <td><?php
                                             if ($rs['rf_status'] == '0') {
                                                 echo '<span class="badge bg-yellow">รอดำเนินการ</span>';
@@ -247,7 +271,7 @@ include_once("../connect/connect_db.php");
                                     <th style="width: 25%;">เรื่อง</th>
                                     <th style="width: 15%;">วันที่ลา</th>
                                     <th style="width: 15%;">ลาถึงวันที่</th>
-                                    <th style="width: 20%;">ติดต่อ</th>
+                                    <th style="width: 20%;">หมายเหตุ</th>
                                     <th style="width: 10%;">สถานะ</th>
                                 </tr>
                             </thead>
@@ -266,7 +290,7 @@ include_once("../connect/connect_db.php");
                                         <td><?php echo $rs['qrf_toppic']; ?></td>
                                         <td><?php echo rev_date($rs['qrf_BdateStart_f']); ?></td>
                                         <td><?php echo rev_date($rs['qrf_AdateStart_f']); ?></td>
-                                        <td><?php echo $rs['qrf_contact']; ?></td>
+                                        <td><?php echo $rs['qrf_note']; ?></td>
                                         <td><?php
                                             if ($rs['qrf_status'] == '0') {
                                                 echo '<span class="badge bg-yellow">รอดำเนินการ</span>';
@@ -305,7 +329,7 @@ include_once("../connect/connect_db.php");
                                     <th style="width: 25%;">เรื่อง</th>
                                     <th style="width: 15%;">วันที่ลา</th>
                                     <th style="width: 15%;">ลาถึงวันที่</th>
-                                    <th style="width: 20%;">ติดต่อ</th>
+                                    <th style="width: 20%;">หมายเหตุ</th>
                                     <th style="width: 10%;">สถานะ</th>
                                 </tr>
                             </thead>
@@ -324,7 +348,7 @@ include_once("../connect/connect_db.php");
                                         <td><?php echo $rs['erf_toppic']; ?></td>
                                         <td><?php echo rev_date($rs['erf_BdateStart_f']); ?></td>
                                         <td><?php echo rev_date($rs['erf_AdateStart_f']); ?></td>
-                                        <td><?php echo $rs['erf_contact']; ?></td>
+                                        <td><?php echo $rs['erf_note']; ?></td>
                                         <td><?php
                                             if ($rs['erf_status'] == '0') {
                                                 echo '<span class="badge bg-yellow">รอดำเนินการ</span>';

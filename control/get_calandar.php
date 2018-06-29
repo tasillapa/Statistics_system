@@ -61,6 +61,27 @@ if (isset($_POST["GETRF"]) && !empty($_POST["GETRF"])) {
     $query = $cn->Connect->query($sql);
     echo $query;
     exit();
+} else if (isset($_POST["addWorkboss"]) && !empty($_POST["addWorkboss"])) {
+    $title = $_POST['title'];
+    $start = $_POST['start'];
+    $end = $_POST['end'];
+    $cn = new connect;
+    $cn->con_db();
+    $sql = "INSERT INTO table_work_boss (twb_title, twb_start, twb_end) VALUES('$title', '$start', '$end')";
+    $query = $cn->Connect->query($sql);
+    echo $query;
+    exit();
+} else if (isset($_POST["GETWB"]) && !empty($_POST["GETWB"])) {
+    $cn = new connect;
+    $cn->con_db();
+    $sql = "SELECT * FROM table_work_boss;";
+    $query = $cn->Connect->query($sql);
+    $array = array();
+    while ($row = mysqli_fetch_array($query)) {
+        array_push($array, $row);
+    }
+    echo json_encode($array);
+    exit();
 }
 ?>
 

@@ -15,7 +15,14 @@ if (mysqli_num_rows($query) >= 1) {
         $_SESSION['password'] = $rs['password'];
         $_SESSION['claim_id'] = $rs['claim_id'];
         $_SESSION['position'] = $rs['position'];
-        $_SESSION['name'] = $rs['fname'] . ' ' . $rs['lname'];
+        $_SESSION['type'] = $rs['type'];
+        $_SESSION['numberID'] = $rs['numberID'];
+        $_SESSION['level'] = $rs['level'];
+        $_SESSION['department'] = $rs['department'];
+        $_SESSION['date'] = $rs['date'];
+        $_SESSION['tel'] = $rs['tel'];
+        $_SESSION['address'] = $rs['address'];
+        $_SESSION['name'] = $rs['prefix'].$rs['fname'] . ' ' . $rs['lname'];
     }
     if ($_SESSION['claim_id'] == '1') {
         header('Location: ../main/calendar.php');

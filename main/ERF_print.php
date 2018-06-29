@@ -98,11 +98,34 @@ while ($rs = mysqli_fetch_array($query)) {
                                             <span class="fa fa-caret-down"></span>
                                         </a>
                                         <ul class="dropdown-menu" role="menu">
-                                            <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                            <?php if ($_SESSION['claim_id'] != '2') { ?>
+                                                <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                            <?php } ?>
                                             <li><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
                                         </ul>
                                     </li>
                                     <?php if ($_SESSION['claim_id'] == '2') { ?>
+                                        <li class="dropdown user user-menu">
+                                            <a href="ConfirmRegister.php">
+                                                <span class="hidden-xs">อนุมัติผู้ใช้งาน</span>
+                                                <?php
+                                                $cn = new connect;
+                                                $cn->con_db();
+                                                $sql = "select * from member where status = '0'";
+                                                $query = $cn->Connect->query($sql);
+                                                $num = mysqli_num_rows($query);
+                                                if ($num != '0') {
+                                                    ?>
+                                                    <span class = "label label-warning">
+                                                        <?php
+                                                        echo $num;
+                                                        ?>
+                                                    </span>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </a>
+                                        </li>
                                         <li class="dropdown user user-menu active">
                                             <a href="App_leave_sec.php">
                                                 <span class="hidden-xs">อนุมัติการลา</span>
@@ -134,8 +157,13 @@ while ($rs = mysqli_fetch_array($query)) {
                                         </li>
                                     <?php } ?>
                                     <li class="dropdown user user-menu">
+                                        <a href="Training_form.php">
+                                            <span class="hidden-xs">การอบรม</span>
+                                        </a>
+                                    </li>
+                                    <li class="dropdown user user-menu">
                                         <a href="Report.php">
-                                            <span class="hidden-xs">รายงานการลา</span>
+                                            <span class="hidden-xs">รายงาน</span>
                                         </a>
                                     </li>
 
@@ -156,9 +184,6 @@ while ($rs = mysqli_fetch_array($query)) {
                                             </li>
                                             <!-- Menu Footer-->
                                             <li class="user-footer">
-                                                <div class="pull-left">
-                                                    <a href="#" class="btn btn-default btn-flat">เปลี่ยนรหัส</a>
-                                                </div>
                                                 <div class="pull-right">
                                                     <a href="logout.php" class="btn btn-default btn-flat">ล็อคเอ้าท์</a>
                                                 </div>

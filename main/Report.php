@@ -89,18 +89,41 @@ include_once("../connect/connect_db.php");
                                         <span class="hidden-xs">ปฏิทินปฏิบัติงาน</span>
                                     </a>
                                 </li>
-                                <li class="dropdown user user-menu active">
+                                <li class="dropdown user user-menu">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                         <span class="hidden-xs">การลา</span>&nbsp;
                                         <span class="fa fa-caret-down"></span>
                                     </a>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                        <?php if ($_SESSION['claim_id'] != '2') { ?>
+                                            <li class="active"><a href="Request_Form.php">ยื่นการลา</a></li>
+                                        <?php } ?>
                                         <li><a href="Approve_leave.php">ตรวจสอบการอนุมัติ</a></li>
                                     </ul>
                                 </li>
                                 <?php if ($_SESSION['claim_id'] == '2') { ?>
-                                    <li class="dropdown user user-menu active">
+                                    <li class="dropdown user user-menu">
+                                        <a href="ConfirmRegister.php">
+                                            <span class="hidden-xs">อนุมัติผู้ใช้งาน</span>
+                                            <?php
+                                            $cn = new connect;
+                                            $cn->con_db();
+                                            $sql = "select * from member where status = '0'";
+                                            $query = $cn->Connect->query($sql);
+                                            $num = mysqli_num_rows($query);
+                                            if ($num != '0') {
+                                                ?>
+                                                <span class = "label label-warning">
+                                                    <?php
+                                                    echo $num;
+                                                    ?>
+                                                </span>
+                                                <?php
+                                            }
+                                            ?>
+                                        </a>
+                                    </li>
+                                    <li class="dropdown user user-menu">
                                         <a href="App_leave_sec.php">
                                             <span class="hidden-xs">อนุมัติการลา</span>
                                             <?php
@@ -130,10 +153,14 @@ include_once("../connect/connect_db.php");
                                         </a>
                                     </li>
                                 <?php } ?>
-
                                 <li class="dropdown user user-menu">
+                                    <a href="Training_form.php">
+                                        <span class="hidden-xs">การอบรม</span>
+                                    </a>
+                                </li>
+                                <li class="dropdown user user-menu active">
                                     <a href="Report.php">
-                                        <span class="hidden-xs">รายงานการลา</span>
+                                        <span class="hidden-xs">รายงาน</span>
                                     </a>
                                 </li>
 
@@ -154,9 +181,6 @@ include_once("../connect/connect_db.php");
                                         </li>
                                         <!-- Menu Footer-->
                                         <li class="user-footer">
-                                            <div class="pull-left">
-                                                <a href="#" class="btn btn-default btn-flat">เปลี่ยนรหัส</a>
-                                            </div>
                                             <div class="pull-right">
                                                 <a href="logout.php" class="btn btn-default btn-flat">ล็อคเอ้าท์</a>
                                             </div>
@@ -189,8 +213,6 @@ include_once("../connect/connect_db.php");
                                     <th >จำนวนครั้งที่ลา</th>
                                     <th >จำนวนวันที่เคยลา</th>
                                     <th >จำนวนวันที่สามารถลาได้</th>
-                                    <th >จำนวนวันลาสะสม</th>
-                                    <th >จำนวนลาวันสะสมที่เหลือ</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -210,8 +232,6 @@ include_once("../connect/connect_db.php");
                                             <td><?php echo $rs['num']; ?></td>
                                             <td><?php echo $rs['num2']; ?></td>
                                             <td><?php echo 10 - $rs['num2']; ?></td>
-                                            <td><?php echo 30 - $rs['num2']; ?></td>
-                                            <td><?php echo 30 - $rs['num2']; ?></td>
                                         </tr>
                                         <?php
                                         $row++;
@@ -225,31 +245,10 @@ include_once("../connect/connect_db.php");
                                         <tr>
                                             <td><?php echo $row; ?></td>
                                             <td><?php echo $rs['qrf_name']; ?></td>
-                                            <td><?php echo 'ลาพักผ่อนข้าราชการ' ?></td>
+                                            <td><?php echo 'ลาพักผ่อน' ?></td>
                                             <td><?php echo $rs['numq']; ?></td>
                                             <td><?php echo $rs['numq2']; ?></td>
                                             <td><?php echo 10 - $rs['numq2']; ?></td>
-                                            <td><?php echo 30 - $rs['numq2']; ?></td>
-                                            <td><?php echo 30 - $rs['numq2']; ?></td>
-                                        </tr>
-                                        <?php
-                                        $row++;
-                                    }
-                                }
-                                $sql3 = 'SELECT COUNT(erf_id) AS nume, SUM(erf_num_f) AS nume2, erf_name FROM `emp_req_form` WHERE erf_status = "1" GROUP BY erf_name';
-                                $query3 = $cn->Connect->query($sql3);
-                                if (mysqli_num_rows($query3) != 0) {
-                                    while ($rs = mysqli_fetch_array($query3)) {
-                                        ?>
-                                        <tr>
-                                            <td><?php echo $row; ?></td>
-                                            <td><?php echo $rs['erf_name']; ?></td>
-                                            <td><?php echo 'ลาพักผ่อนพนักงานราชการ' ?></td>
-                                            <td><?php echo $rs['nume']; ?></td>
-                                            <td><?php echo $rs['nume2']; ?></td>
-                                            <td><?php echo 10 - $rs['nume2']; ?></td>
-                                            <td><?php echo 30 - $rs['nume2']; ?></td>
-                                            <td><?php echo 30 - $rs['nume2']; ?></td>
                                         </tr>
                                         <?php
                                         $row++;
@@ -271,21 +270,36 @@ include_once("../connect/connect_db.php");
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="example1" class="table table-bordered table-striped">
+                        <table id="example3" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th >ลำดับ</th>
                                     <th >ชื่อ</th>
-                                    <th >ประเภท</th>
-                                    <th >จำนวนครั้งที่ลา</th>
-                                    <th >จำนวนวันที่เคยลา</th>
-                                    <th >จำนวนวันที่สามารถลาได้</th>
-                                    <th >จำนวนวันลาสะสม</th>
-                                    <th >จำนวนลาวันสะสมที่เหลือ</th>
+                                    <th >จำนวนครั้งที่ไปอบรม</th>
+                                    <th >จำนวนวันที่เคยไปอบรม</th>
                                 </tr>
                             </thead>
                             <tbody>
-
+                                <?php
+                                $cn = new connect;
+                                $cn->con_db();
+                                $sql = 'SELECT COUNT(tf_id) AS num, SUM(tf_num) AS num2, tf_name FROM `training_form` GROUP BY tf_name';
+                                $query = $cn->Connect->query($sql);
+                                $row = 1;
+                                if (mysqli_num_rows($query) != 0) {
+                                    while ($rs = mysqli_fetch_array($query)) {
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $row; ?></td>
+                                            <td><?php echo $rs['tf_name']; ?></td>
+                                            <td><?php echo $rs['num']; ?></td>
+                                            <td><?php echo $rs['num2']; ?></td>
+                                        </tr>
+                                        <?php
+                                        $row++;
+                                    }
+                                }
+                                ?>
                             </tbody>
                         </table>
                     </div>
@@ -293,8 +307,8 @@ include_once("../connect/connect_db.php");
             </section>
         </div>
 
-        <!-- jQuery 3 -->
-        <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+        <!--jQuery 3 -->
+        <script src = "../bower_components/jquery/dist/jquery.min.js"></script>
         <!-- Bootstrap 3.3.7 -->
         <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
         <!-- Select2 -->
